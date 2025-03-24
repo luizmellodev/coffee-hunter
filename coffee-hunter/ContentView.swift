@@ -8,14 +8,29 @@
 import SwiftUI
 
 struct ContentView: View {
+    @StateObject private var appState = AppState()
+    @StateObject private var viewModel = CoffeeHunterViewModel()
+    
     var body: some View {
-        VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundStyle(.tint)
-            Text("Hello, world!")
+        Group {
+            if !appState.hasSeenOnboarding {
+                OnboardingView(hasSeenOnboarding: $appState.hasSeenOnboarding)
+            } else if appState.isLoading {
+                LoadingView()
+            } else {
+                MainTabView(viewModel: viewModel)
+            }
         }
-        .padding()
+        .onReceive(viewModel.locationManager.$userLocation) { location in
+            if let location = location {
+                viewModel.updateLocation(location)
+                // Add delay to show loading animation
+                DispatchQueue.main.asyncAfter(deadline: .now() + 4.0) {
+                    appState.hasLocation = true
+                    appState.isLoading = false
+                }
+            }
+        }
     }
 }
 

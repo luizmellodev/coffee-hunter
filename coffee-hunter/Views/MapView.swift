@@ -1,0 +1,50 @@
+//
+//  MapView.swift
+//  coffee-hunter
+//
+//  Created by Luiz Mello on 24/03/25.
+//
+
+
+import MapKit
+import CoreLocation
+import SwiftUI
+
+struct MapView: View {
+    @ObservedObject var viewModel: CoffeeHunterViewModel
+    @State private var searchText = ""
+    @State private var showSearch = false
+    @State private var selectedIndex = 0
+    
+    var body: some View {
+        NavigationStack {
+            ZStack(alignment: .bottom) {
+                CoffeeMapView(viewModel: viewModel, selectedIndex: $selectedIndex)
+                
+                VStack(spacing: 0) {
+                    if showSearch {
+                        MapSearchBar(searchText: $searchText, showSearch: $showSearch) { query in
+                            searchLocation(query, viewModel: viewModel)
+                        }
+                        .transition(.move(edge: .top))
+                    }
+                    
+                    Spacer()
+                    
+                    if !viewModel.coffeeShopService.coffeeShops.isEmpty {
+                        MapBottomSheet(viewModel: viewModel, selectedIndex: $selectedIndex)
+                            .padding(.bottom)
+                    }
+                }
+            }
+            .navigationTitle("Find Cafes")
+            .toolbar {
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button(action: { withAnimation { showSearch.toggle() } }) {
+                        Image(systemName: "magnifyingglass")
+                    }
+                }
+            }
+        }
+    }
+}
