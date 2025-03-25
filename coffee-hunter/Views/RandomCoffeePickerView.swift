@@ -42,7 +42,7 @@ struct RandomCoffeePickerView: View {
                                 mapItem.name = shop.name
                                 mapItem.openInMaps(launchOptions: [MKLaunchOptionsDirectionsModeKey: MKLaunchOptionsDirectionsModeDriving])
                             }) {
-                                Label("Ir para este café", systemImage: "location.fill")
+                                Label("Ir para o café", systemImage: "location.fill")
                                     .padding()
                                     .frame(maxWidth: .infinity)
                                     .background(Color.accentColor)

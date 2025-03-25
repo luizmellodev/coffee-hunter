@@ -13,11 +13,9 @@ class CoffeeHunterDataManager: ObservableObject {
     @Published var favorites: [CoffeeShop] = []
     @Published var visitHistory: [CoffeeShopVisit] = []
     @Published var isPremium: Bool = false
-    @Published var missions: [Mission] = []
     
     let kFavoriteCoffeeShops = "favoriteCoffeeShops"
     let kVisitedCoffeeShops = "visitedCoffeeShops"
-    let kMissions = "missions"
     let kIsPremium = "isPremium"
     
     init() {
@@ -35,11 +33,6 @@ class CoffeeHunterDataManager: ObservableObject {
             self.visitHistory = visits
         }
         
-        if let data = UserDefaults.standard.data(forKey: kMissions),
-           let missions = try? JSONDecoder().decode([Mission].self, from: data) {
-            self.missions = missions
-        }
-        
         self.isPremium = UserDefaults.standard.bool(forKey: kIsPremium)
     }
     
@@ -47,7 +40,6 @@ class CoffeeHunterDataManager: ObservableObject {
         let visit = CoffeeShopVisit(shopName: shop.name, date: Date())
         visitHistory.append(visit)
         saveData()
-        checkMissionCompletion(visit: visit)
     }
     
     func addFavorite(_ shop: CoffeeShop) {
@@ -88,42 +80,6 @@ class CoffeeHunterDataManager: ObservableObject {
         return nearbyShops.randomElement()
     }
     
-    func generateCoffeeRoute(from shops: [CoffeeShop], maxStops: Int = 5) -> [CoffeeShop]? {
-        guard isPremium else { return nil }
-        
-        var route: [CoffeeShop] = []
-        var availableShops = shops
-        
-        while route.count < maxStops && !availableShops.isEmpty {
-            if let randomShop = availableShops.randomElement(),
-               let index = availableShops.firstIndex(where: { $0.id == randomShop.id }) {
-                route.append(randomShop)
-                availableShops.remove(at: index)
-            }
-        }
-        
-        return route.isEmpty ? nil : route
-    }
-    
-    func checkMissionCompletion(visit: CoffeeShopVisit) {
-        let today = Calendar.current.startOfDay(for: Date())
-        
-        let todayVisits = visitHistory.filter { visit in
-            Calendar.current.isDate(visit.date, inSameDayAs: today)
-        }
-        
-        if todayVisits.count >= 2 {
-            addMission(Mission(title: "Coffee Explorer", description: "Visited 2 coffee shops in one day", points: 100))
-        }
-    }
-    
-    func addMission(_ mission: Mission) {
-        if !missions.contains(where: { $0.id == mission.id }) {
-            missions.append(mission)
-            saveData()
-        }
-    }
-    
     func setPremiumStatus(_ isPremium: Bool) {
         self.isPremium = isPremium
         UserDefaults.standard.set(isPremium, forKey: kIsPremium)
@@ -138,10 +94,21 @@ class CoffeeHunterDataManager: ObservableObject {
             UserDefaults.standard.set(data, forKey: kVisitedCoffeeShops)
         }
         
-        if let data = try? JSONEncoder().encode(missions) {
-            UserDefaults.standard.set(data, forKey: kMissions)
+        UserDefaults.standard.set(isPremium, forKey: kIsPremium)
+    }
+    
+    func generateCoffeeRoute(from shops: [CoffeeShop]) -> [CoffeeShop] {
+        var availableShops = shops
+        var route: [CoffeeShop] = []
+        let maxStops = 3
+        
+        while route.count < maxStops && !availableShops.isEmpty {
+            if let randomIndex = availableShops.indices.randomElement() {
+                route.append(availableShops[randomIndex])
+                availableShops.remove(at: randomIndex)
+            }
         }
         
-        UserDefaults.standard.set(isPremium, forKey: kIsPremium)
+        return route
     }
 }

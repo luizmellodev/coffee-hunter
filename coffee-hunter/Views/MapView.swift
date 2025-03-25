@@ -33,25 +33,6 @@ struct MapView: View {
                     Spacer()
                     
                     if !viewModel.coffeeShopService.coffeeShops.isEmpty {
-                        HStack {
-                            Button(action: { showRandomPicker = true }) {
-                                Label("Escolha pra mim", systemImage: "dice")
-                                    .padding()
-                                    .background(Color.accentColor)
-                                    .foregroundColor(.white)
-                                    .cornerRadius(10)
-                            }
-                            
-                            Button(action: { showCoffeeRoute = true }) {
-                                Label("Rota do Café", systemImage: "map")
-                                    .padding()
-                                    .background(Color.green)
-                                    .foregroundColor(.white)
-                                    .cornerRadius(10)
-                            }
-                        }
-                        .padding()
-                        
                         MapBottomSheet(viewModel: viewModel, selectedIndex: $selectedIndex)
                             .padding(.bottom)
                     }
@@ -64,9 +45,6 @@ struct MapView: View {
                         Image(systemName: "magnifyingglass")
                     }
                 }
-            }
-            .sheet(isPresented: $showRandomPicker) {
-                RandomCoffeePickerView(viewModel: viewModel)
             }
             .sheet(isPresented: $showCoffeeRoute) {
                 CoffeeRouteView(viewModel: viewModel)

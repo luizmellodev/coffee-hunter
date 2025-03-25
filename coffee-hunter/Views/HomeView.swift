@@ -10,12 +10,48 @@ import SwiftUI
 struct HomeView: View {
     @ObservedObject var viewModel: CoffeeHunterViewModel
     @State private var selectedSection = 0
+    @State private var isPickingCoffee = false
+    @State private var rotation: Double = 0
     @Namespace private var animation
     
     var body: some View {
         NavigationStack {
             ScrollView(showsIndicators: false) {
                 VStack(alignment: .leading, spacing: 25) {
+                    // Coffee Picker Button
+                    Button {
+                        withAnimation(.spring(response: 0.6, dampingFraction: 0.7)) {
+                            isPickingCoffee = true
+                            rotation += 360
+                        }
+                    } label: {
+                        HStack {
+                            Image(systemName: "cup.and.saucer.fill")
+                                .font(.system(size: 24))
+                                .rotationEffect(.degrees(rotation))
+                            
+                            Text("Escolha meu café")
+                        }
+                        .foregroundColor(.white)
+                        .frame(maxWidth: .infinity)
+                        .frame(height: 56)
+                        .background(
+                            RoundedRectangle(cornerRadius: 16)
+                                .fill(
+                                    LinearGradient(
+                                        gradient: Gradient(colors: [.brown, Color(red: 0.4, green: 0.2, blue: 0.1)]),
+                                        startPoint: .topLeading,
+                                        endPoint: .bottomTrailing
+                                    )
+                                )
+                                .shadow(color: .brown.opacity(0.3), radius: 10, x: 0, y: 5)
+                        )
+                        .sheet(isPresented: $isPickingCoffee) {
+                            RandomCoffeePickerView(viewModel: viewModel)
+                        }
+                    }
+                    .disabled(isPickingCoffee)
+                    
                     HStack(spacing: 30) {
                         sectionButton(title: "Popular", tag: 0, icon: "star.fill")
                         sectionButton(title: "Nearby", tag: 1, icon: "location.fill")
