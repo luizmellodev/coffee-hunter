@@ -15,6 +15,7 @@ class CoffeeHunterViewModel: ObservableObject {
     @Published var selectedCoffeeShop: CoffeeShop?
     @Published var showAchievementAlert = false
     @Published var lastAchievement: Mission?
+    @Published var selectedTab: Int = 0
     
     let locationManager = LocationManager()
     let coffeeShopService = CoffeeShopService()
@@ -31,11 +32,28 @@ class CoffeeHunterViewModel: ObservableObject {
                 self?.objectWillChange.send()
             }
             .store(in: &cancellables)
+            
+        // Initialize coffee shops when location is available
+        locationManager.$userLocation
+            .compactMap { $0 }
+            .sink { [weak self] location in
+                print("Debug: Got initial user location, fetching coffee shops")
+                self?.updateLocation(location)
+            }
+            .store(in: &cancellables)
     }
     
     func updateLocation(_ location: CLLocationCoordinate2D) {
+        print("Debug: Updating location and fetching coffee shops")
         selectedLocation = location
         coffeeShopService.fetchNearbyCoffeeShops(near: location)
+    }
+    
+    func navigateToMapWithShop(_ shop: CoffeeShop) {
+        print("Debug: Navigating to map with shop: \(shop.name)")
+        selectedCoffeeShop = shop
+        selectedTab = 1
+        updateLocation(shop.coordinates)
     }
     
     func toggleFavorite(_ shop: CoffeeShop) {

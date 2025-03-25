@@ -10,57 +10,71 @@ struct RandomCoffeePickerView: View {
     
     var body: some View {
         NavigationView {
-            VStack {
+            ScrollView {
                 if isLoading {
                     ProgressView("Procurando o café perfeito...")
+                        .padding(.top, 40)
                 } else if let shop = selectedShop {
-                    VStack(spacing: 20) {
+                    VStack(spacing: 24) {
                         Text(" Encontramos seu café! ")
                             .font(.title2)
                             .bold()
                         
                         ModernCoffeeCard(shop: shop, viewModel: viewModel)
-                            .padding()
+                            .padding(.horizontal)
                         
-                        HStack(spacing: 12) {
-                            Button(action: {
-                                viewModel.selectedCoffeeShop = shop
-                                viewModel.updateLocation(shop.coordinates)
+                        // Botões
+                        VStack(spacing: 12) {
+                            Button {
+                                print("Debug: Navigating to map with shop: \(shop.name)")
+                                viewModel.navigateToMapWithShop(shop)
                                 dismiss()
-                            }) {
-                                Label("Ver no Mapa", systemImage: "map")
-                                    .padding()
-                                    .frame(maxWidth: .infinity)
-                                    .background(Color.green)
-                                    .foregroundColor(.white)
-                                    .cornerRadius(10)
+                            } label: {
+                                HStack {
+                                    Image(systemName: "map")
+                                    Text("Ver no Mapa")
+                                }
+                                .frame(maxWidth: .infinity)
+                                .padding()
+                                .background(Color.green)
+                                .foregroundColor(.white)
+                                .cornerRadius(10)
                             }
                             
-                            Button(action: {
+                            Button {
+                                print("Debug: Opening in Maps: \(shop.name)")
                                 let coordinate = shop.coordinates
                                 let mapItem = MKMapItem(placemark: MKPlacemark(coordinate: coordinate))
                                 mapItem.name = shop.name
-                                mapItem.openInMaps(launchOptions: [MKLaunchOptionsDirectionsModeKey: MKLaunchOptionsDirectionsModeDriving])
-                            }) {
-                                Label("Ir para o café", systemImage: "location.fill")
-                                    .padding()
-                                    .frame(maxWidth: .infinity)
-                                    .background(Color.accentColor)
-                                    .foregroundColor(.white)
-                                    .cornerRadius(10)
+                                mapItem.openInMaps(launchOptions: [
+                                    MKLaunchOptionsDirectionsModeKey: MKLaunchOptionsDirectionsModeDriving
+                                ])
+                            } label: {
+                                HStack {
+                                    Image(systemName: "location.fill")
+                                    Text("Ir para o café")
+                                }
+                                .frame(maxWidth: .infinity)
+                                .padding()
+                                .background(Color.blue)
+                                .foregroundColor(.white)
+                                .cornerRadius(10)
                             }
+                            
+                            Button(action: pickRandomShop) {
+                                Text("Tentar outro")
+                                    .foregroundColor(.brown)
+                            }
+                            .padding(.top)
                         }
                         .padding(.horizontal)
-                        
-                        Button("Tentar outro", action: pickRandomShop)
-                            .padding()
                     }
+                    .padding(.vertical)
                 } else {
                     Text("Nenhum café encontrado em um raio de 10km")
-                        .padding()
+                        .padding(.top, 40)
                 }
             }
-            .padding()
             .navigationTitle("Escolha pra mim")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
@@ -70,24 +84,43 @@ struct RandomCoffeePickerView: View {
                     }
                 }
             }
-            .onAppear(perform: pickRandomShop)
+            .onAppear {
+                print("Debug: RandomCoffeePickerView appeared")
+                if viewModel.coffeeShopService.coffeeShops.isEmpty {
+                    print("Debug: No coffee shops loaded, fetching...")
+                    if let location = viewModel.locationManager.userLocation {
+                        viewModel.updateLocation(location)
+                    }
+                }
+                pickRandomShop()
+            }
         }
     }
     
     private func pickRandomShop() {
         isLoading = true
+        print("Debug: Starting pickRandomShop")
+        
         guard let coordinate = viewModel.locationManager.userLocation else {
+            print("Debug: No user location available")
             isLoading = false
             return
         }
         
         let userLocation = CLLocation(latitude: coordinate.latitude, longitude: coordinate.longitude)
+        print("Debug: Available coffee shops: \(viewModel.coffeeShopService.coffeeShops.count)")
         
+        // Add delay for UI feedback
         DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-            selectedShop = viewModel.dataManager.getRandomCoffeeShop(
+            if let shop = viewModel.dataManager.getRandomCoffeeShop(
                 from: viewModel.coffeeShopService.coffeeShops,
                 userLocation: userLocation
-            )
+            ) {
+                print("Debug: Found random shop: \(shop.name)")
+                self.selectedShop = shop
+            } else {
+                print("Debug: No shop found")
+            }
             isLoading = false
         }
     }

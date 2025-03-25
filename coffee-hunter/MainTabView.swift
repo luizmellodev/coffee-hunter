@@ -8,14 +8,13 @@
 import SwiftUI
 
 struct MainTabView: View {
-    @ObservedObject var viewModel: CoffeeHunterViewModel
-    @State private var selectedTab = 0
+    @StateObject var viewModel: CoffeeHunterViewModel
     
     var body: some View {
-        TabView(selection: $selectedTab) {
+        TabView(selection: $viewModel.selectedTab) {
             HomeView(viewModel: viewModel)
                 .tabItem {
-                    Label("Explore", systemImage: "house.fill")
+                    Label("Home", systemImage: "house.fill")
                 }
                 .tag(0)
             

@@ -21,6 +21,7 @@ struct CoffeeMapView: View {
                     .tint(viewModel.selectedCoffeeShop == shop ? .brown : .gray)
                     .tag(shop)
             }
+            .mapItemDetailSelectionAccessory()
             UserAnnotation()
         }
         .mapStyle(.standard)

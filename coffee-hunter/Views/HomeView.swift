@@ -50,7 +50,6 @@ struct HomeView: View {
                             RandomCoffeePickerView(viewModel: viewModel)
                         }
                     }
-                    .disabled(isPickingCoffee)
                     
                     HStack(spacing: 30) {
                         sectionButton(title: "Popular", tag: 0, icon: "star.fill")
