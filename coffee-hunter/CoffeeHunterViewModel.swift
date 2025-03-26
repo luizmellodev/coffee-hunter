@@ -26,14 +26,12 @@ class CoffeeHunterViewModel: ObservableObject {
     init() {
         self.dataManager = CoffeeHunterDataManager()
         
-        // Subscribe to dataManager changes
         dataManager.objectWillChange
             .sink { [weak self] _ in
                 self?.objectWillChange.send()
             }
             .store(in: &cancellables)
             
-        // Initialize coffee shops when location is available
         locationManager.$userLocation
             .compactMap { $0 }
             .sink { [weak self] location in
@@ -51,9 +49,15 @@ class CoffeeHunterViewModel: ObservableObject {
     
     func navigateToMapWithShop(_ shop: CoffeeShop) {
         print("Debug: Navigating to map with shop: \(shop.name)")
-        selectedCoffeeShop = shop
-        selectedTab = 1
+        selectedTab = 1 // Switch to map tab
+        
+        // First update the location to center the map
         updateLocation(shop.coordinates)
+        
+        // Then set the selected shop after a small delay to ensure proper animation
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+            self.selectedCoffeeShop = shop
+        }
     }
     
     func toggleFavorite(_ shop: CoffeeShop) {
@@ -61,6 +65,11 @@ class CoffeeHunterViewModel: ObservableObject {
             dataManager.removeFavorite(shop)
         } else {
             dataManager.addFavorite(shop)
+        }
+        
+        // Update selected shop if it's the one being modified
+        if selectedCoffeeShop?.id == shop.id {
+            selectedCoffeeShop = shop
         }
     }
     
@@ -72,7 +81,6 @@ class CoffeeHunterViewModel: ObservableObject {
         dataManager.clearVisitHistory()
     }
     
-    // ADD: Premium features
     func upgradeToPremium() {
         dataManager.setPremiumStatus(true)
     }

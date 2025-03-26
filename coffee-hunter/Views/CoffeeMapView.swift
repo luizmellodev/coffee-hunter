@@ -15,23 +15,24 @@ struct CoffeeMapView: View {
     @State private var position: MapCameraPosition = .userLocation(fallback: .automatic)
     
     var body: some View {
-        Map(position: $position, selection: $viewModel.selectedCoffeeShop) {
-            ForEach(viewModel.coffeeShopService.coffeeShops) { shop in
-                Marker(shop.name, coordinate: shop.coordinates)
-                    .tint(viewModel.selectedCoffeeShop == shop ? .brown : .gray)
-                    .tag(shop)
+        ZStack(alignment: .bottom) {
+            Map(position: $position, selection: $viewModel.selectedCoffeeShop) {
+                ForEach(viewModel.coffeeShopService.coffeeShops) { shop in
+                    Marker(shop.name, coordinate: shop.coordinates)
+                        .tint(viewModel.selectedCoffeeShop?.id == shop.id ? .brown : .gray)
+                        .tag(shop)
+                }
+                UserAnnotation()
             }
-            .mapItemDetailSelectionAccessory()
-            UserAnnotation()
-        }
-        .mapStyle(.standard)
-        .mapControls {
-            MapUserLocationButton()
-                .buttonBorderShape(.circle)
-                .tint(.white)
-                .padding()
-                .background(.ultraThinMaterial)
-                .clipShape(Circle())
+            .mapStyle(.standard)
+            .mapControls {
+                MapUserLocationButton()
+                    .buttonBorderShape(.circle)
+                    .tint(.white)
+                    .padding()
+                    .background(.ultraThinMaterial)
+                    .clipShape(Circle())
+            }
         }
         .onChange(of: selectedIndex) { _, newIndex in
             let sortedShops = viewModel.coffeeShopService.coffeeShops.sorted { $0.distance < $1.distance }
@@ -43,11 +44,12 @@ struct CoffeeMapView: View {
         }
         .onChange(of: viewModel.selectedCoffeeShop) { _, shop in
             guard let shop = shop else { return }
+            updateRegion(for: shop)
+            
             if let index = viewModel.coffeeShopService.coffeeShops
                 .sorted(by: { $0.distance < $1.distance })
                 .firstIndex(of: shop) {
                 selectedIndex = index
-                updateRegion(for: shop)
             }
         }
     }

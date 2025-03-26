@@ -5,7 +5,6 @@
 //  Created by Luiz Mello on 24/03/25.
 //
 
-
 import SwiftUI
 import MapKit
 import CoreLocation
@@ -22,7 +21,7 @@ struct ShopBottomCard: View {
             
             HStack(spacing: 15) {
                 ZStack {
-                    Color.gray.opacity(0.3)
+                    Color.brown.opacity(0.15)
                         .frame(width: 80, height: 80)
                         .clipShape(RoundedRectangle(cornerRadius: 8))
                     
