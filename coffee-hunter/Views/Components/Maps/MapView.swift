@@ -12,7 +12,6 @@ import SwiftUI
 struct MapView: View {
     @ObservedObject var viewModel: CoffeeHunterViewModel
     @State private var searchText = ""
-    @State private var showSearch = false
     @State private var selectedIndex = 0
     @State private var showRandomPicker = false
     @State private var showCoffeeRoute = false
@@ -23,12 +22,6 @@ struct MapView: View {
                 CoffeeMapView(viewModel: viewModel, selectedIndex: $selectedIndex)
                 
                 VStack(spacing: 0) {
-                    if showSearch {
-                        MapSearchBar(searchText: $searchText, showSearch: $showSearch) { query in
-                            searchLocation(query, viewModel: viewModel)
-                        }
-                        .transition(.move(edge: .top))
-                    }
                     
                     Spacer()
                     
@@ -39,13 +32,6 @@ struct MapView: View {
                 }
             }
             .navigationTitle("Find Cafes")
-            .toolbar {
-                ToolbarItem(placement: .topBarTrailing) {
-                    Button(action: { withAnimation { showSearch.toggle() } }) {
-                        Image(systemName: "magnifyingglass")
-                    }
-                }
-            }
             .sheet(isPresented: $showCoffeeRoute) {
                 CoffeeRouteView(viewModel: viewModel)
             }

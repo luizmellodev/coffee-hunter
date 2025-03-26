@@ -5,12 +5,12 @@
 //  Created by Luiz Mello on 26/03/25.
 //
 
-
 import SwiftUI
 
 struct CoffeeCard: View {
     let shop: CoffeeShop
     let viewModel: CoffeeHunterViewModel
+    @State private var showDetail = false
     
     var body: some View {
         VStack(alignment: .leading) {
@@ -62,7 +62,12 @@ struct CoffeeCard: View {
         .clipShape(RoundedRectangle(cornerRadius: 12))
         .shadow(color: .black.opacity(0.05), radius: 5, y: 2)
         .onTapGesture {
-            viewModel.navigateToMapWithShop(shop)
+            showDetail = true
+        }
+        .sheet(isPresented: $showDetail) {
+            NavigationView {
+                CoffeeShopDetailView(shop: shop, viewModel: viewModel)
+            }
         }
     }
 }

@@ -33,8 +33,8 @@ struct CoffeeShopDetailView: View {
                     
                     VStack {
                         Image(systemName: "cup.and.saucer.fill")
-                        .font(.system(size: 60))
-                        .foregroundStyle(.brown)
+                            .font(.system(size: 60))
+                            .foregroundStyle(.brown)
                     }
                     .frame(maxWidth: .infinity)
                     .frame(height: 250)
@@ -76,31 +76,49 @@ struct CoffeeShopDetailView: View {
                     }
                     
                     // Actions
-                    HStack(spacing: 20) {
+                    VStack(spacing: 16) {
+                        // Primary Action
                         Button(action: {
-                            shop.mapItem.openInMaps()
+                            viewModel.navigateToMapWithShop(shop)
+                            dismiss()
                         }) {
-                            Label("Open in Maps", systemImage: "map.fill")
-                            .frame(maxWidth: .infinity)
-                            .padding()
-                            .background(Color.brown)
-                            .foregroundColor(.white)
-                            .cornerRadius(10)
+                            Label("View this coffee shop", systemImage: "map")
+                                .frame(maxWidth: .infinity)
+                                .padding()
+                                .background(Color.brown)
+                                .foregroundColor(.white)
+                                .cornerRadius(10)
                         }
                         
+                        // Get Directions
+                        Button(action: {
+                            shop.mapItem.openInMaps(launchOptions: [
+                                MKLaunchOptionsDirectionsModeKey: MKLaunchOptionsDirectionsModeDriving
+                            ])
+                        }) {
+                            Label("Get directions", systemImage: "location.fill")
+                                .frame(maxWidth: .infinity)
+                                .padding()
+                                .background(Color.brown.opacity(0.15))
+                                .foregroundColor(.brown)
+                                .cornerRadius(10)
+                        }
+                        
+                        // Additional Actions
                         if let url = shop.website {
                             Button(action: {
                                 UIApplication.shared.open(url)
                             }) {
-                                Label("Website", systemImage: "safari")
+                                Label("Visit website", systemImage: "safari")
                                     .frame(maxWidth: .infinity)
                                     .padding()
-                                    .background(Color.brown)
-                                    .foregroundColor(.white)
+                                    .background(Color.brown.opacity(0.15))
+                                    .foregroundColor(.brown)
                                     .cornerRadius(10)
                             }
                         }
                     }
+                    .padding(.top, 8)
                 }
                 .padding()
                 

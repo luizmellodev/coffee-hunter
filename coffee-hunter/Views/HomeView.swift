@@ -107,19 +107,33 @@ struct HomeView: View {
                     
                     // Animated sections
                     Group {
-                        PopularSection(
+                        CoffeeShopSection(
                             viewModel: viewModel,
+                            title: "Popular picks",
+                            icon: "star.fill",
+                            iconColor: .yellow,
+                            shops: Array(viewModel.coffeeShopService.coffeeShops
+                                .sorted { $0.rating > $1.rating }),
                             showContent: $showContent
                         )
                         
-                        NearbySection(
+                        CoffeeShopSection(
                             viewModel: viewModel,
+                            title: "Around you",
+                            icon: "location.fill",
+                            iconColor: .brown,
+                            shops: Array(viewModel.coffeeShopService.coffeeShops
+                                .sorted { $0.distance < $1.distance }),
                             showContent: $showContent
                         )
                         
                         if !viewModel.dataManager.favorites.isEmpty {
-                            FavoritesSection(
+                            CoffeeShopSection(
                                 viewModel: viewModel,
+                                title: "Your favorites",
+                                icon: "heart.fill",
+                                iconColor: .red,
+                                shops: Array(viewModel.dataManager.favorites),
                                 showContent: $showContent
                             )
                         }
@@ -138,171 +152,6 @@ struct HomeView: View {
         .onAppear {
             withAnimation(.easeOut(duration: 0.8).delay(0.3)) {
                 showContent = true
-            }
-        }
-    }
-}
-
-struct PopularSection: View {
-    let viewModel: CoffeeHunterViewModel
-    @Binding var showContent: Bool
-    @State private var showAll = false
-    
-    var body: some View {
-        VStack(alignment: .leading, spacing: 12) {
-            HStack {
-                Image(systemName: "star.fill")
-                    .foregroundColor(.yellow)
-                Text("Popular picks")
-                    .font(.title3)
-                    .fontWeight(.semibold)
-                Spacer()
-                Button("See All") {
-                    showAll = true
-                }
-                .font(.subheadline)
-                .foregroundColor(.brown)
-            }
-            .padding(.horizontal)
-            
-            ScrollView(.horizontal, showsIndicators: false) {
-                HStack(spacing: 16) {
-                    ForEach(Array(viewModel.coffeeShopService.coffeeShops
-                        .sorted { $0.rating > $1.rating }
-                        .prefix(3))) { shop in
-                        CoffeeCard(shop: shop, viewModel: viewModel)
-                            .transition(.slide)
-                    }
-                }
-                .padding(.horizontal)
-            }
-        }
-        .opacity(showContent ? 1 : 0)
-        .offset(y: showContent ? 0 : 20)
-        .sheet(isPresented: $showAll) {
-            NavigationView {
-                List(Array(viewModel.coffeeShopService.coffeeShops
-                    .sorted { $0.rating > $1.rating })) { shop in
-                        CoffeeListItem(showAll: $showAll, shop: shop, viewModel: viewModel)
-                }
-                .navigationTitle("Popular Coffee Shops")
-                .navigationBarTitleDisplayMode(.inline)
-                .toolbar {
-                    ToolbarItem(placement: .topBarTrailing) {
-                        Button("Done") {
-                            showAll = false
-                        }
-                    }
-                }
-            }
-        }
-    }
-}
-
-struct NearbySection: View {
-    let viewModel: CoffeeHunterViewModel
-    @Binding var showContent: Bool
-    @State private var showAll = false
-    
-    var body: some View {
-        VStack(alignment: .leading, spacing: 12) {
-            HStack {
-                Image(systemName: "location.fill")
-                    .foregroundColor(.brown)
-                Text("Around you")
-                    .font(.title3)
-                    .fontWeight(.semibold)
-                Spacer()
-                Button("See All") {
-                    showAll = true
-                }
-                .font(.subheadline)
-                .foregroundColor(.brown)
-            }
-            .padding(.horizontal)
-            
-            ScrollView(.horizontal, showsIndicators: false) {
-                HStack(spacing: 16) {
-                    ForEach(Array(viewModel.coffeeShopService.coffeeShops
-                        .sorted { $0.distance < $1.distance }
-                        .prefix(3))) { shop in
-                        CoffeeCard(shop: shop, viewModel: viewModel)
-                            .transition(.slide)
-                    }
-                }
-                .padding(.horizontal)
-            }
-        }
-        .opacity(showContent ? 1 : 0)
-        .offset(y: showContent ? 0 : 20)
-        .sheet(isPresented: $showAll) {
-            NavigationView {
-                List(Array(viewModel.coffeeShopService.coffeeShops
-                    .sorted { $0.distance < $1.distance })) { shop in
-                        CoffeeListItem(showAll: $showAll, shop: shop, viewModel: viewModel)
-                }
-                .navigationTitle("Nearby Coffee Shops")
-                .navigationBarTitleDisplayMode(.inline)
-                .toolbar {
-                    ToolbarItem(placement: .topBarTrailing) {
-                        Button("Done") {
-                            showAll = false
-                        }
-                    }
-                }
-            }
-        }
-    }
-}
-
-struct FavoritesSection: View {
-    let viewModel: CoffeeHunterViewModel
-    @Binding var showContent: Bool
-    @State private var showAll = false
-    
-    var body: some View {
-        VStack(alignment: .leading, spacing: 12) {
-            HStack {
-                Image(systemName: "heart.fill")
-                    .foregroundColor(.red)
-                Text("Your favorites")
-                    .font(.title3)
-                    .fontWeight(.semibold)
-                Spacer()
-                Button("See All") {
-                    showAll = true
-                }
-                .font(.subheadline)
-                .foregroundColor(.brown)
-            }
-            .padding(.horizontal)
-            
-            ScrollView(.horizontal, showsIndicators: false) {
-                HStack(spacing: 16) {
-                    ForEach(Array(viewModel.dataManager.favorites.prefix(3))) { shop in
-                        CoffeeCard(shop: shop, viewModel: viewModel)
-                            .transition(.slide)
-                    }
-                }
-                .padding(.horizontal)
-            }
-        }
-        .opacity(showContent ? 1 : 0)
-        .offset(y: showContent ? 0 : 20)
-        .sheet(isPresented: $showAll) {
-            NavigationView {
-                List(Array(viewModel.dataManager.favorites)) { shop in
-                    CoffeeListItem(showAll: $showAll, shop: shop, viewModel: viewModel)
-                }
-                .navigationTitle("Favorite Coffee Shops")
-                .navigationBarTitleDisplayMode(.inline)
-                .toolbar {
-                    ToolbarItem(placement: .topBarTrailing) {
-                        Button("Done") {
-                            showAll = false
-                        }
-                    }
-                }
             }
         }
     }

@@ -1,26 +1,19 @@
-//
-//  CoffeeSection.swift
-//  coffee-hunter
-//
-//  Created by Luiz Mello on 26/03/25.
-//
-
-
 import SwiftUI
 
-struct CoffeeSection: View {
+struct CoffeeShopSection: View {
+    let viewModel: CoffeeHunterViewModel
     let title: String
     let icon: String
-    let shops: any Sequence<CoffeeShop>
-    let viewModel: CoffeeHunterViewModel
-    @Binding var showAll: Bool
-    let allShops: any Sequence<CoffeeShop>
+    let iconColor: Color
+    let shops: [CoffeeShop]
+    @Binding var showContent: Bool
+    @State private var showAll = false
     
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
             HStack {
                 Image(systemName: icon)
-                    .foregroundColor(.brown)
+                    .foregroundColor(iconColor)
                 Text(title)
                     .font(.title3)
                     .fontWeight(.semibold)
@@ -35,19 +28,22 @@ struct CoffeeSection: View {
             
             ScrollView(.horizontal, showsIndicators: false) {
                 HStack(spacing: 16) {
-                    ForEach(Array(shops)) { shop in
+                    ForEach(Array(shops.prefix(3))) { shop in
                         CoffeeCard(shop: shop, viewModel: viewModel)
+                            .transition(.slide)
                     }
                 }
                 .padding(.horizontal)
             }
         }
+        .opacity(showContent ? 1 : 0)
+        .offset(y: showContent ? 0 : 20)
         .sheet(isPresented: $showAll) {
             NavigationView {
-                List(Array(allShops)) { shop in
+                List(Array(shops)) { shop in
                     CoffeeListItem(showAll: $showAll, shop: shop, viewModel: viewModel)
                 }
-                .navigationTitle(title)
+                .navigationTitle("\(title)")
                 .navigationBarTitleDisplayMode(.inline)
                 .toolbar {
                     ToolbarItem(placement: .topBarTrailing) {
