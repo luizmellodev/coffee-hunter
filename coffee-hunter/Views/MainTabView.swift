@@ -30,6 +30,8 @@ struct MainTabView: View {
                 }
                 .tag(2)
         }
+        .toolbarBackground(.visible, for: .tabBar)
+        .toolbarBackground(.ultraThinMaterial, for: .tabBar)
         .tint(.brown)
     }
 }
