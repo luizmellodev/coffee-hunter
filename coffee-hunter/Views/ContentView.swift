@@ -24,8 +24,8 @@ struct ContentView: View {
         .onReceive(viewModel.locationManager.$userLocation) { location in
             if let location = location {
                 viewModel.updateLocation(location)
-                // Add delay to show loading animation
-                DispatchQueue.main.asyncAfter(deadline: .now() + 4.0) {
+                
+                DispatchQueue.main.asyncAfter(deadline: .now() + 5.0) {
                     appState.hasLocation = true
                     appState.isLoading = false
                 }

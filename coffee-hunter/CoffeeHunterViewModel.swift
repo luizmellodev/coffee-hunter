@@ -41,6 +41,16 @@ class CoffeeHunterViewModel: ObservableObject {
             .store(in: &cancellables)
     }
     
+    func refreshLocation() {
+        locationManager.$userLocation
+            .compactMap { $0 }
+            .sink { [weak self] location in
+                print("Debug: Got initial user location, fetching coffee shops")
+                self?.updateLocation(location)
+            }
+            .store(in: &cancellables)
+    }
+    
     func updateLocation(_ location: CLLocationCoordinate2D) {
         print("Debug: Updating location and fetching coffee shops")
         selectedLocation = location

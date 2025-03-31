@@ -20,7 +20,6 @@ struct HomeView: View {
         NavigationStack {
             ScrollView(showsIndicators: false) {
                 VStack(alignment: .leading, spacing: 25) {
-                    // Animated Welcome Section
                     VStack(alignment: .leading, spacing: 8) {
                         Text("Hey coffee lover!")
                             .font(.title2)
@@ -39,73 +38,6 @@ struct HomeView: View {
                         }
                     }
                     
-                    // Animated Coffee Discovery Card
-                    VStack(alignment: .leading, spacing: 12) {
-                        Text("Feeling adventurous?")
-                            .font(.title3)
-                            .fontWeight(.semibold)
-                            .padding(.horizontal)
-                            .opacity(showContent ? 1 : 0)
-                            .offset(y: showContent ? 0 : 20)
-                        
-                        Button {
-                            withAnimation(.spring(response: 0.6, dampingFraction: 0.7)) {
-                                rotation += 360
-                                cupScale = 1.1
-                                DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
-                                    cupScale = 1.0
-                                }
-                                isPickingCoffee = true
-                            }
-                        } label: {
-                            HStack(spacing: 15) {
-                                Image(systemName: "cup.and.saucer.fill")
-                                    .font(.system(size: 40))
-                                    .rotationEffect(.degrees(rotation))
-                                    .scaleEffect(cupScale)
-                                    .animation(.spring(response: 0.4, dampingFraction: 0.6), value: cupScale)
-                                
-                                VStack(alignment: .leading, spacing: 4) {
-                                    Text("Surprise me!")
-                                        .font(.headline)
-                                    Text("Discover a random coffee shop")
-                                        .multilineTextAlignment(.leading)
-                                        .font(.subheadline)
-                                        .foregroundColor(.white.opacity(0.8))
-                                }
-                                
-                                Spacer()
-                                
-                                Image(systemName: "sparkles")
-                                    .font(.title2)
-                                    .rotationEffect(.degrees(rotation))
-                            }
-                            .padding()
-                            .background(
-                                RoundedRectangle(cornerRadius: 16)
-                                    .fill(
-                                        LinearGradient(
-                                            gradient: Gradient(colors: [
-                                                Color(red: 0.8, green: 0.6, blue: 0.4),
-                                                Color(red: 0.6, green: 0.4, blue: 0.3)
-                                            ]),
-                                            startPoint: .topLeading,
-                                            endPoint: .bottomTrailing
-                                        )
-                                    )
-                                    .shadow(color: Color(red: 0.6, green: 0.4, blue: 0.3).opacity(0.3), radius: 10, y: 5)
-                            )
-                            .foregroundColor(.white)
-                        }
-                        .padding(.horizontal)
-                        .opacity(showContent ? 1 : 0)
-                        .offset(y: showContent ? 0 : 20)
-                        .sheet(isPresented: $isPickingCoffee) {
-                            RandomCoffeePickerView(viewModel: viewModel)
-                        }
-                    }
-                    
-                    // Animated sections
                     Group {
                         CoffeeShopSection(
                             viewModel: viewModel,
@@ -116,6 +48,72 @@ struct HomeView: View {
                                 .sorted { $0.rating > $1.rating }),
                             showContent: $showContent
                         )
+                        
+                        // Animated Coffee Discovery Card
+                        VStack(alignment: .leading, spacing: 12) {
+                            Text("Feeling adventurous?")
+                                .font(.title3)
+                                .fontWeight(.semibold)
+                                .padding(.horizontal)
+                                .opacity(showContent ? 1 : 0)
+                                .offset(y: showContent ? 0 : 20)
+                            
+                            Button {
+                                withAnimation(.spring(response: 0.6, dampingFraction: 0.7)) {
+                                    rotation += 360
+                                    cupScale = 1.1
+                                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                                        cupScale = 1.0
+                                    }
+                                    isPickingCoffee = true
+                                }
+                            } label: {
+                                HStack(spacing: 15) {
+                                    Image(systemName: "cup.and.saucer.fill")
+                                        .font(.system(size: 40))
+                                        .rotationEffect(.degrees(rotation))
+                                        .scaleEffect(cupScale)
+                                        .animation(.spring(response: 0.4, dampingFraction: 0.6), value: cupScale)
+                                    
+                                    VStack(alignment: .leading, spacing: 4) {
+                                        Text("Surprise me!")
+                                            .font(.headline)
+                                        Text("Discover a random coffee shop")
+                                            .multilineTextAlignment(.leading)
+                                            .font(.subheadline)
+                                            .foregroundColor(.white.opacity(0.8))
+                                    }
+                                    
+                                    Spacer()
+                                    
+                                    Image(systemName: "sparkles")
+                                        .font(.title2)
+                                        .rotationEffect(.degrees(rotation))
+                                }
+                                .padding()
+                                .background(
+                                    RoundedRectangle(cornerRadius: 16)
+                                        .fill(
+                                            LinearGradient(
+                                                gradient: Gradient(colors: [
+                                                    Color(red: 0.8, green: 0.6, blue: 0.4),
+                                                    Color(red: 0.6, green: 0.4, blue: 0.3)
+                                                ]),
+                                                startPoint: .topLeading,
+                                                endPoint: .bottomTrailing
+                                            )
+                                        )
+                                        .shadow(color: Color(red: 0.6, green: 0.4, blue: 0.3).opacity(0.3), radius: 10, y: 5)
+                                )
+                                .foregroundColor(.white)
+                            }
+                            .padding(.horizontal)
+                            .opacity(showContent ? 1 : 0)
+                            .offset(y: showContent ? 0 : 20)
+                            .sheet(isPresented: $isPickingCoffee) {
+                                RandomCoffeePickerView(viewModel: viewModel)
+                            }
+                        }
                         
                         CoffeeShopSection(
                             viewModel: viewModel,
@@ -148,6 +146,10 @@ struct HomeView: View {
                     .opacity(0.95)
                     .ignoresSafeArea()
             )
+            .refreshable(action: {
+                viewModel.refreshLocation()
+
+            })
         }
         .onAppear {
             withAnimation(.easeOut(duration: 0.8).delay(0.3)) {
