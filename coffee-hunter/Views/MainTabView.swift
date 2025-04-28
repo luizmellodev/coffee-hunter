@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct MainTabView: View {
-    @StateObject var viewModel: CoffeeHunterViewModel
+    @ObservedObject var viewModel: CoffeeHunterViewModel
     
     var body: some View {
         TabView(selection: $viewModel.selectedTab) {

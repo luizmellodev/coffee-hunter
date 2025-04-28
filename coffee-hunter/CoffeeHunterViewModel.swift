@@ -1,10 +1,3 @@
-//
-//  CoffeeHunterViewModel.swift
-//  coffee-hunter
-//
-//  Created by Luiz Mello on 24/03/25.
-//
-
 import SwiftUI
 import MapKit
 import CoreLocation
@@ -16,22 +9,14 @@ class CoffeeHunterViewModel: ObservableObject {
     @Published var showAchievementAlert = false
     @Published var lastAchievement: Mission?
     @Published var selectedTab: Int = 0
-    
+
+    @Published var dataManager = CoffeeHunterDataManager()
     let locationManager = LocationManager()
     let coffeeShopService = CoffeeShopService()
-    @Published var dataManager: CoffeeHunterDataManager
     
     private var cancellables = Set<AnyCancellable>()
     
-    init() {
-        self.dataManager = CoffeeHunterDataManager()
-        
-        dataManager.objectWillChange
-            .sink { [weak self] _ in
-                self?.objectWillChange.send()
-            }
-            .store(in: &cancellables)
-            
+    func startLocationUpdates() {
         locationManager.$userLocation
             .compactMap { $0 }
             .sink { [weak self] location in
@@ -39,16 +24,12 @@ class CoffeeHunterViewModel: ObservableObject {
                 self?.updateLocation(location)
             }
             .store(in: &cancellables)
+        
+        locationManager.startContinuousUpdates()
     }
     
     func refreshLocation() {
-        locationManager.$userLocation
-            .compactMap { $0 }
-            .sink { [weak self] location in
-                print("Debug: Got initial user location, fetching coffee shops")
-                self?.updateLocation(location)
-            }
-            .store(in: &cancellables)
+        locationManager.requestSingleLocationUpdate()
     }
     
     func updateLocation(_ location: CLLocationCoordinate2D) {
@@ -59,12 +40,10 @@ class CoffeeHunterViewModel: ObservableObject {
     
     func navigateToMapWithShop(_ shop: CoffeeShop) {
         print("Debug: Navigating to map with shop: \(shop.name)")
-        selectedTab = 1 // Switch to map tab
+        selectedTab = 1
         
-        // First update the location to center the map
         updateLocation(shop.coordinates)
         
-        // Then set the selected shop after a small delay to ensure proper animation
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
             self.selectedCoffeeShop = shop
         }
@@ -77,7 +56,6 @@ class CoffeeHunterViewModel: ObservableObject {
             dataManager.addFavorite(shop)
         }
         
-        // Update selected shop if it's the one being modified
         if selectedCoffeeShop?.id == shop.id {
             selectedCoffeeShop = shop
         }

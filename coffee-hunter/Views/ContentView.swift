@@ -1,10 +1,3 @@
-//
-//  ContentView.swift
-//  coffee-hunter
-//
-//  Created by Luiz Mello on 24/03/25.
-//
-
 import SwiftUI
 
 struct ContentView: View {
@@ -21,10 +14,11 @@ struct ContentView: View {
                 MainTabView(viewModel: viewModel)
             }
         }
+        .onAppear {
+            viewModel.startLocationUpdates()
+        }
         .onReceive(viewModel.locationManager.$userLocation) { location in
-            if let location = location {
-                viewModel.updateLocation(location)
-                
+            if location != nil {
                 DispatchQueue.main.asyncAfter(deadline: .now() + 5.0) {
                     appState.hasLocation = true
                     appState.isLoading = false

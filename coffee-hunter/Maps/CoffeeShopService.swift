@@ -22,6 +22,8 @@ class CoffeeShopService: ObservableObject {
             longitudinalMeters: 150000
         )
         
+        request.pointOfInterestFilter = MKPointOfInterestFilter(including: [.cafe])
+        
         let search = MKLocalSearch(request: request)
         search.start { [weak self] response, error in
             guard let response = response else { return }
