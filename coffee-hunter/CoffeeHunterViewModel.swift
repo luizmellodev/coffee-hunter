@@ -4,9 +4,7 @@ import CoreLocation
 import Combine
 
 class CoffeeHunterViewModel: ObservableObject {
-    @Published var selectedLocation: CLLocationCoordinate2D?
-    @Published var selectedCoffeeShop: CoffeeShop?
-    @Published var showAchievementAlert = false
+    @Published var selection: MKMapItem?
     @Published var selectedTab: Int = 0
 
     @Published var dataManager = CoffeeHunterDataManager()
@@ -33,35 +31,33 @@ class CoffeeHunterViewModel: ObservableObject {
     
     func updateLocation(_ location: CLLocationCoordinate2D) {
         print("Debug: Updating location and fetching coffee shops")
-        selectedLocation = location
         coffeeShopService.fetchNearbyCoffeeShops(near: location)
     }
     
-    func navigateToMapWithShop(_ shop: CoffeeShop) {
-        print("Debug: Navigating to map with shop: \(shop.name)")
+    func navigateToMapWithShop(_ shop: MKMapItem) {
+        print("Debug: Navigating to map with shop: \(shop.name ?? "")")
         selectedTab = 1
         
-        updateLocation(shop.coordinates)
+        updateLocation(shop.placemark.coordinate)
         
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-            self.selectedCoffeeShop = shop
+            self.selection = shop
         }
     }
     
-    func toggleFavorite(_ shop: CoffeeShop) {
-        if isFavorite(shop) {
+    func toggleFavorite(_ shop: MKMapItem) {
+        let isCurrentlyLiked = CoffeeShopData.shared.metadata(for: shop).isLiked
+        CoffeeShopData.shared.updateMetadata(for: shop, isLiked: !isCurrentlyLiked)
+        
+        if isCurrentlyLiked {
             dataManager.removeFavorite(shop)
         } else {
             dataManager.addFavorite(shop)
         }
-        
-        if selectedCoffeeShop?.id == shop.id {
-            selectedCoffeeShop = shop
-        }
     }
     
-    func isFavorite(_ shop: CoffeeShop) -> Bool {
-        dataManager.favorites.contains(where: { $0.id == shop.id })
+    func isFavorite(_ shop: MKMapItem) -> Bool {
+        CoffeeShopData.shared.metadata(for: shop).isLiked
     }
     
     func clearVisitHistory() {

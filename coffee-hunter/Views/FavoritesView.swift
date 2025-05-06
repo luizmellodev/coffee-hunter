@@ -6,10 +6,12 @@
 //
 
 import SwiftUI
+import MapKit
 
 struct FavoritesView: View {
     @ObservedObject var viewModel: CoffeeHunterViewModel
-    @State private var selectedShop: CoffeeShop? = nil
+    @State private var selectedShop: MKMapItem? = nil
+    @State private var showDetail = false
     
     var body: some View {
         NavigationStack {
@@ -18,10 +20,11 @@ struct FavoritesView: View {
                     emptyStateView
                 } else {
                     LazyVGrid(columns: [GridItem(.flexible())], spacing: 16) {
-                        ForEach(viewModel.dataManager.favorites) { shop in
+                        ForEach(viewModel.dataManager.favorites, id: \.self) { shop in
                             FavoriteCard(shop: shop, viewModel: viewModel)
                                 .onTapGesture {
                                     selectedShop = shop
+                                    showDetail = true
                                 }
                         }
                     }
@@ -29,9 +32,11 @@ struct FavoritesView: View {
                 }
             }
             .navigationTitle("Favorites")
-            .sheet(item: $selectedShop) { shop in
-                NavigationStack {
-                    CoffeeShopDetailView(shop: shop, viewModel: viewModel)
+            .sheet(isPresented: $showDetail) {
+                if let shop = selectedShop {
+                    NavigationStack {
+                        CoffeeShopDetailView(shop: shop, viewModel: viewModel)
+                    }
                 }
             }
         }

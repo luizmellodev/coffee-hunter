@@ -6,9 +6,10 @@
 //
 
 import SwiftUI
+import MapKit
 
 struct CoffeeCard: View {
-    let shop: CoffeeShop
+    let shop: MKMapItem
     let viewModel: CoffeeHunterViewModel
     @State private var showDetail = false
     
@@ -37,20 +38,20 @@ struct CoffeeCard: View {
             }
             
             VStack(alignment: .leading, spacing: 4) {
-                Text(shop.name)
+                Text(shop.name ?? "Unknown")
                     .font(.headline)
                     .lineLimit(1)
                 
                 HStack {
                     Image(systemName: "star.fill")
                         .foregroundColor(.yellow)
-                    Text(String(format: "%.1f", shop.rating))
+                    Text(String(format: "%.1f", CoffeeShopData.shared.metadata(for: shop).rating))
                     
                     Spacer()
                     
                     Image(systemName: "location.fill")
                         .foregroundColor(.brown)
-                    Text(String(format: "%.1f km", shop.distance))
+                    Text(String(format: "%.1f km", CoffeeShopData.shared.metadata(for: shop).distance))
                 }
                 .font(.caption)
             }

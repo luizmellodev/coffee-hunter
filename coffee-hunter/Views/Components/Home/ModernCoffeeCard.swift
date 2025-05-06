@@ -6,9 +6,10 @@
 //
 
 import SwiftUI
+import MapKit
 
 struct ModernCoffeeCard: View {
-    let shop: CoffeeShop
+    let shop: MKMapItem
     @ObservedObject var viewModel: CoffeeHunterViewModel
     @State private var isPressed = false
     @State private var showDetails = false
@@ -51,7 +52,7 @@ struct ModernCoffeeCard: View {
                                 .font(.system(size: 40))
                                 .foregroundStyle(.brown)
                             
-                            Text(shop.name.prefix(1).uppercased())
+                            Text(shop.name?.prefix(1).uppercased() ?? "")
                                 .font(.system(size: 24, weight: .bold))
                                 .foregroundColor(.brown)
                                 .opacity(0.8)
@@ -65,20 +66,20 @@ struct ModernCoffeeCard: View {
             .frame(height: 140)
             
             VStack(alignment: .leading, spacing: 4) {
-                Text(shop.name)
+                Text(shop.name ?? "Unknown")
                     .font(.headline)
                     .lineLimit(1)
                 
                 HStack(spacing: 12) {
                     Label {
-                        Text(String(format: "%.1f", shop.rating))
+                        Text(String(format: "%.1f", CoffeeShopData.shared.metadata(for: shop).rating))
                     } icon: {
                         Image(systemName: "star.fill")
                             .foregroundStyle(.yellow)
                     }
                     
                     Label {
-                        Text(String(format: "%.1f km", shop.distance))
+                        Text(String(format: "%.1f km", CoffeeShopData.shared.metadata(for: shop).distance))
                     } icon: {
                         Image(systemName: "location.fill")
                             .foregroundStyle(.brown)

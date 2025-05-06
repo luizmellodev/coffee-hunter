@@ -5,7 +5,7 @@ import CoreLocation
 struct RandomCoffeePickerView: View {
     @ObservedObject var viewModel: CoffeeHunterViewModel
     @Environment(\.dismiss) var dismiss
-    @State private var selectedShop: CoffeeShop?
+    @State private var selectedShop: MKMapItem?
     @State private var isLoading = false
     @State private var showContent = false
     @State private var rotationAngle = 0.0
@@ -66,7 +66,7 @@ struct RandomCoffeePickerView: View {
         .transition(.opacity.combined(with: .move(edge: .bottom)))
     }
     
-    private func successView(shop: CoffeeShop) -> some View {
+    private func successView(shop: MKMapItem) -> some View {
         VStack(spacing: 32) {
             // Header
             VStack(spacing: 16) {
@@ -97,7 +97,7 @@ struct RandomCoffeePickerView: View {
             // Action Buttons
             VStack(spacing: 16) {
                 Button {
-                    print("Debug: Navigating to map with shop: \(shop.name)")
+                    print("Debug: Navigating to map with shop: \(shop.name ?? "")")
                     viewModel.navigateToMapWithShop(shop)
                     dismiss()
                 } label: {
@@ -110,11 +110,8 @@ struct RandomCoffeePickerView: View {
                 }
                 
                 Button {
-                    print("Debug: Opening in Maps: \(shop.name)")
-                    let coordinate = shop.coordinates
-                    let mapItem = MKMapItem(placemark: MKPlacemark(coordinate: coordinate))
-                    mapItem.name = shop.name
-                    mapItem.openInMaps(launchOptions: [
+                    print("Debug: Opening in Maps: \(shop.name ?? "")")
+                    shop.openInMaps(launchOptions: [
                         MKLaunchOptionsDirectionsModeKey: MKLaunchOptionsDirectionsModeDriving
                     ])
                 } label: {
@@ -181,9 +178,9 @@ struct RandomCoffeePickerView: View {
                 from: viewModel.coffeeShopService.coffeeShops,
                 userLocation: userLocation
             ) {
-                print("Debug: Found random shop: \(shop.name)")
+                print("Debug: Found random shop: \(shop.name ?? "")")
                 withAnimation(.easeInOut(duration: 0.3)) {
-                    self.selectedShop = shop
+                    self.selectedShop = shop  // Simply assign the shop directly
                     self.isLoading = false
                 }
             } else {

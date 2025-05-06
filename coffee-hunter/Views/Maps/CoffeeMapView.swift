@@ -11,61 +11,69 @@ import SwiftUI
 
 struct CoffeeMapView: View {
     @ObservedObject var viewModel: CoffeeHunterViewModel
-    @Binding var selectedIndex: Int
     @State private var position: MapCameraPosition = .userLocation(fallback: .automatic)
     
     var body: some View {
-        ZStack(alignment: .bottom) {
-            Map(position: $position, selection: $viewModel.selectedCoffeeShop) {
-                ForEach(viewModel.coffeeShopService.coffeeShops) { shop in
-                    Marker(shop.name, coordinate: shop.coordinates)
-                        .tint(viewModel.selectedCoffeeShop?.id == shop.id ? .brown : .gray)
-                        .tag(shop)
-                }
-                UserAnnotation()
+        Map(position: $position, selection: $viewModel.selection) {
+            ForEach(viewModel.coffeeShopService.coffeeShops, id: \.self) { shop in
+                Marker(item: shop)
+                    .tint(viewModel.selection == shop ? .brown : .gray)
             }
-            .mapStyle(.standard)
-            .mapControls {
-                MapUserLocationButton()
-                    .buttonBorderShape(.circle)
-                    .tint(.white)
-                    .padding()
-                    .background(.ultraThinMaterial)
-                    .clipShape(Circle())
-            }
+            .mapItemDetailSelectionAccessory()
         }
-        .onChange(of: selectedIndex) { _, newIndex in
-            let sortedShops = viewModel.coffeeShopService.coffeeShops.sorted { $0.distance < $1.distance }
-            guard newIndex < sortedShops.count else { return }
-            
-            let shop = sortedShops[newIndex]
-            viewModel.selectedCoffeeShop = shop
-            updateRegion(for: shop)
+        .mapStyle(.standard)
+        .mapControls {
+            MapUserLocationButton()
+                .buttonBorderShape(.circle)
+                .tint(.white)
+                .padding()
+                .background(.ultraThinMaterial)
+                .clipShape(Circle())
         }
-        .onChange(of: viewModel.selectedCoffeeShop) { _, shop in
-            guard let shop = shop else { return }
-            updateRegion(for: shop)
-            
-            if let index = viewModel.coffeeShopService.coffeeShops
-                .sorted(by: { $0.distance < $1.distance })
-                .firstIndex(of: shop) {
-                selectedIndex = index
-            }
-        }
-    }
-    
-    private func updateRegion(for shop: CoffeeShop) {
-        withAnimation {
-            position = .region(MKCoordinateRegion(
-                center: shop.coordinates,
-                span: MKCoordinateSpan(latitudeDelta: 0.01, longitudeDelta: 0.01)
-            ))
-        }
+//        .safeAreaInset(edge: .bottom) {
+//            if let selection = viewModel.selection {
+//                HStack {
+//                    Button {
+//                        viewModel.toggleFavorite(selection)
+//                    } label: {
+//                        Label(
+//                            viewModel.isFavorite(selection) ? "Remove from Favorites" : "Add to Favorites",
+//                            systemImage: viewModel.isFavorite(selection) ? "heart.fill" : "heart"
+//                        )
+//                        .labelStyle(.iconOnly)
+//                        .foregroundStyle(viewModel.isFavorite(selection) ? .red : .primary)
+//                    }
+//                    .padding(12)
+//                    .background(.ultraThinMaterial)
+//                    .clipShape(Circle())
+//
+//                    Button {
+//                        viewModel.dataManager.addVisit(selection)
+//                    } label: {
+//                        Label("Check In", systemImage: "checkmark.circle")
+//                            .labelStyle(.iconOnly)
+//                    }
+//                    .padding(12)
+//                    .background(.ultraThinMaterial)
+//                    .clipShape(Circle())
+//                }
+//                .padding(.bottom)
+//            }
+//        }
+//        .onChange(of: viewModel.selection) { _, shop in
+//            guard let shop = shop else { return }
+//            withAnimation {
+//                position = .region(MKCoordinateRegion(
+//                    center: shop.placemark.coordinate,
+//                    span: MKCoordinateSpan(latitudeDelta: 0.01, longitudeDelta: 0.01)
+//                ))
+//            }
+//        }
     }
 }
 
 #Preview {
     let viewModel = CoffeeHunterViewModel()
     
-    CoffeeMapView(viewModel: viewModel, selectedIndex: .constant(0))
+    CoffeeMapView(viewModel: viewModel)
 }

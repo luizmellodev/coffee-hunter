@@ -10,7 +10,7 @@ import MapKit
 import CoreLocation
 
 struct CoffeeShopDetailView: View {
-    let shop: CoffeeShop
+    let shop: MKMapItem
     @ObservedObject var viewModel: CoffeeHunterViewModel
     @Environment(\.dismiss) private var dismiss
     @State private var isLiked = false
@@ -43,7 +43,7 @@ struct CoffeeShopDetailView: View {
                 VStack(alignment: .leading, spacing: 16) {
                     // Title and Rating
                     HStack {
-                        Text(shop.name)
+                        Text(shop.name ?? "Unknown")
                             .font(.title)
                             .bold()
                         
@@ -58,15 +58,15 @@ struct CoffeeShopDetailView: View {
                     
                     // Rating and Distance
                     HStack(spacing: 15) {
-                        Label(String(format: "%.1f", shop.rating), systemImage: "star.fill")
+                        Label(String(format: "%.1f", CoffeeShopData.shared.metadata(for: shop).rating), systemImage: "star.fill")
                             .foregroundStyle(.yellow)
                         
-                        Label(String(format: "%.1f km", shop.distance), systemImage: "location.fill")
+                        Label(String(format: "%.1f km", CoffeeShopData.shared.metadata(for: shop).distance), systemImage: "location.fill")
                             .foregroundStyle(.brown)
                     }
                     
                     // Address
-                    Label(shop.address, systemImage: "map")
+                    Label(formatAddress(shop.placemark), systemImage: "map")
                         .foregroundStyle(.secondary)
                     
                     // Phone (if available)
@@ -92,7 +92,7 @@ struct CoffeeShopDetailView: View {
                         
                         // Get Directions
                         Button(action: {
-                            shop.mapItem.openInMaps(launchOptions: [
+                            shop.openInMaps(launchOptions: [
                                 MKLaunchOptionsDirectionsModeKey: MKLaunchOptionsDirectionsModeDriving
                             ])
                         }) {
@@ -105,7 +105,7 @@ struct CoffeeShopDetailView: View {
                         }
                         
                         // Additional Actions
-                        if let url = shop.website {
+                        if let url = shop.url {
                             Button(action: {
                                 UIApplication.shared.open(url)
                             }) {
@@ -168,8 +168,14 @@ struct CoffeeShopDetailView: View {
             }
             Button("Cancel", role: .cancel) { }
         } message: {
-            Text("Are you currently at \(shop.name)?")
+            Text("Are you currently at \(shop.name ?? "this location")?")
         }
+    }
+    
+    private func formatAddress(_ placemark: MKPlacemark) -> String {
+        let street = placemark.thoroughfare ?? ""
+        let number = placemark.subThoroughfare ?? ""
+        return "\(number) \(street)".trimmingCharacters(in: .whitespaces)
     }
     
     private var hasVisitedToday: Bool {
@@ -185,11 +191,9 @@ struct CoffeeShopDetailView: View {
     }
     
     private func shareShop() {
-        let shareText = "Check out \(shop.name) on Coffee Hunter! Rating: \(shop.rating)★\nAddress: \(shop.address)"
-        let mapItem = MKMapItem(placemark: MKPlacemark(coordinate: shop.coordinates))
-        mapItem.name = shop.name
+        let shareText = "Check out \(shop.name ?? "this coffee shop") on Coffee Hunter! Rating: \(CoffeeShopData.shared.metadata(for: shop).rating)★\nAddress: \(formatAddress(shop.placemark))"
         
-        let activityItems: [Any] = [shareText, mapItem]
+        let activityItems: [Any] = [shareText, shop]
         let activityVC = UIActivityViewController(activityItems: activityItems, applicationActivities: nil)
         
         guard let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,

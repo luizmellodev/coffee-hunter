@@ -5,11 +5,11 @@
 //  Created by Luiz Mello on 24/03/25.
 //
 
-
 import SwiftUI
+import MapKit
 
 struct FavoriteCard: View {
-    let shop: CoffeeShop
+    let shop: MKMapItem
     @ObservedObject var viewModel: CoffeeHunterViewModel
     @State private var showingDeleteConfirmation = false
     
@@ -25,14 +25,14 @@ struct FavoriteCard: View {
                 }
             
             VStack(alignment: .leading, spacing: 4) {
-                Text(shop.name)
+                Text(shop.name ?? "Unknown")
                     .font(.headline)
                 
-                Text(shop.address)
+                Text(formatAddress(shop.placemark))
                     .font(.subheadline)
                     .foregroundColor(.secondary)
                 
-                Label(String(format: "%.1f", shop.rating), systemImage: "star.fill")
+                Label(String(format: "%.1f", CoffeeShopData.shared.metadata(for: shop).rating), systemImage: "star.fill")
                     .font(.caption)
                     .foregroundStyle(.yellow)
             }
@@ -60,7 +60,13 @@ struct FavoriteCard: View {
             }
             Button("Cancel", role: .cancel) {}
         } message: {
-            Text("Are you sure you want to remove \(shop.name) from your favorites?")
+            Text("Are you sure you want to remove \(shop.name ?? "this coffee shop") from your favorites?")
         }
+    }
+    
+    private func formatAddress(_ placemark: MKPlacemark) -> String {
+        let street = placemark.thoroughfare ?? ""
+        let number = placemark.subThoroughfare ?? ""
+        return "\(number) \(street)".trimmingCharacters(in: .whitespaces)
     }
 }

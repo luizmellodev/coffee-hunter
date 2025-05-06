@@ -12,26 +12,34 @@ import SwiftUI
 struct MapView: View {
     @ObservedObject var viewModel: CoffeeHunterViewModel
     @State private var searchText = ""
-    @State private var selectedIndex = 0
     @State private var showRandomPicker = false
     @State private var showCoffeeRoute = false
     
     var body: some View {
         NavigationStack {
-            ZStack(alignment: .bottom) {
-                CoffeeMapView(viewModel: viewModel, selectedIndex: $selectedIndex)
-                
-                VStack(spacing: 0) {
-                    
-                    Spacer()
-                    
-                    if !viewModel.coffeeShopService.coffeeShops.isEmpty {
-                        MapBottomTabView(viewModel: viewModel, selectedIndex: $selectedIndex)
-                            .padding(.bottom)
+            CoffeeMapView(viewModel: viewModel)
+                .navigationTitle("Find Cafes")
+                .toolbar {
+                    ToolbarItem(placement: .topBarTrailing) {
+                        Menu {
+                            Button(action: { showRandomPicker = true }) {
+                                Label("Random Coffee", systemImage: "dice")
+                            }
+                            
+                            Button(action: { showCoffeeRoute = true }) {
+                                Label("Coffee Route", systemImage: "map")
+                            }
+                        } label: {
+                            Image(systemName: "ellipsis.circle")
+                        }
                     }
                 }
-            }
-            .navigationTitle("Find Cafes")
+                .sheet(isPresented: $showRandomPicker) {
+                    RandomCoffeePickerView(viewModel: viewModel)
+                }
+                .sheet(isPresented: $showCoffeeRoute) {
+                    Text("Coffee Route") // TODO: Implement this view
+                }
         }
     }
 }

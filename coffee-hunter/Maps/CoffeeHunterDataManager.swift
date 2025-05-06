@@ -10,22 +10,23 @@ import MapKit
 import CoreLocation
 
 class CoffeeHunterDataManager: ObservableObject {
-    @Published var favorites: [CoffeeShop] = []
+    @Published var favorites: [MKMapItem] = []
     @Published var visitHistory: [CoffeeShopVisit] = []
     @Published var isPremium: Bool = false
     
     let kFavoriteCoffeeShops = "favoriteCoffeeShops"
     let kVisitedCoffeeShops = "visitedCoffeeShops"
     let kIsPremium = "isPremium"
+    let kShopMetadata = "shopMetadata"
     
     init() {
         loadData()
     }
     
     private func loadData() {
-        if let data = UserDefaults.standard.data(forKey: kFavoriteCoffeeShops),
-           let favorites = try? JSONDecoder().decode([CoffeeShop].self, from: data) {
-            self.favorites = favorites
+        if let data = UserDefaults.standard.data(forKey: kShopMetadata),
+           let metadata = try? JSONDecoder().decode([String: CoffeeShopData.ShopMetadata].self, from: data) {
+            CoffeeShopData.shared.shopData = metadata
         }
         
         if let data = UserDefaults.standard.data(forKey: kVisitedCoffeeShops),
@@ -36,14 +37,14 @@ class CoffeeHunterDataManager: ObservableObject {
         self.isPremium = UserDefaults.standard.bool(forKey: kIsPremium)
     }
     
-    func addVisit(_ shop: CoffeeShop) {
-        let visit = CoffeeShopVisit(shopName: shop.name, date: Date())
+    func addVisit(_ shop: MKMapItem) {
+        let visit = CoffeeShopVisit(shopName: shop.name ?? "Unknown", date: Date())
         visitHistory.append(visit)
         saveData()
     }
     
-    func addFavorite(_ shop: CoffeeShop) {
-        if !favorites.contains(where: { $0.id == shop.id }) {
+    func addFavorite(_ shop: MKMapItem) {
+        if !favorites.contains(where: { CoffeeShopData.shared.id(for: $0) == CoffeeShopData.shared.id(for: shop) }) {
             DispatchQueue.main.async {
                 self.favorites.append(shop)
                 self.saveData()
@@ -52,8 +53,8 @@ class CoffeeHunterDataManager: ObservableObject {
         }
     }
     
-    func removeFavorite(_ shop: CoffeeShop) {
-        if let index = favorites.firstIndex(where: { $0.id == shop.id }) {
+    func removeFavorite(_ shop: MKMapItem) {
+        if let index = favorites.firstIndex(where: { CoffeeShopData.shared.id(for: $0) == CoffeeShopData.shared.id(for: shop) }) {
             DispatchQueue.main.async {
                 self.favorites.remove(at: index)
                 self.saveData()
@@ -70,10 +71,23 @@ class CoffeeHunterDataManager: ObservableObject {
         }
     }
     
-    func getRandomCoffeeShop(from shops: [CoffeeShop], userLocation: CLLocation) -> CoffeeShop? {
+    private func saveData() {
+        if let data = try? JSONEncoder().encode(CoffeeShopData.shared.shopData) {
+            UserDefaults.standard.set(data, forKey: kShopMetadata)
+        }
+        
+        if let data = try? JSONEncoder().encode(visitHistory) {
+            UserDefaults.standard.set(data, forKey: kVisitedCoffeeShops)
+        }
+        
+        UserDefaults.standard.set(isPremium, forKey: kIsPremium)
+    }
+    
+    // CHANGE: update getRandomCoffeeShop to work with MKMapItems
+    func getRandomCoffeeShop(from shops: [MKMapItem], userLocation: CLLocation) -> MKMapItem? {
         let nearbyShops = shops.filter { shop in
-            let shopLocation = CLLocation(latitude: shop.latitude, longitude: shop.longitude)
-            let distance = userLocation.distance(from: shopLocation) / 1000
+            guard let shopLocation = shop.placemark.location else { return false }
+            let distance = shopLocation.distance(from: userLocation) / 1000
             return distance <= 10
         }
         
@@ -85,21 +99,9 @@ class CoffeeHunterDataManager: ObservableObject {
         UserDefaults.standard.set(isPremium, forKey: kIsPremium)
     }
     
-    private func saveData() {
-        if let data = try? JSONEncoder().encode(favorites) {
-            UserDefaults.standard.set(data, forKey: kFavoriteCoffeeShops)
-        }
-        
-        if let data = try? JSONEncoder().encode(visitHistory) {
-            UserDefaults.standard.set(data, forKey: kVisitedCoffeeShops)
-        }
-        
-        UserDefaults.standard.set(isPremium, forKey: kIsPremium)
-    }
-    
-    func generateCoffeeRoute(from shops: [CoffeeShop]) -> [CoffeeShop] {
+    func generateCoffeeRoute(from shops: [MKMapItem]) -> [MKMapItem] {
         var availableShops = shops
-        var route: [CoffeeShop] = []
+        var route: [MKMapItem] = []
         let maxStops = 3
         
         while route.count < maxStops && !availableShops.isEmpty {

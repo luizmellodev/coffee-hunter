@@ -1,11 +1,12 @@
 import SwiftUI
+import MapKit
 
 struct CoffeeShopSection: View {
     let viewModel: CoffeeHunterViewModel
     let title: String
     let icon: String
     let iconColor: Color
-    let shops: [CoffeeShop]
+    let shops: [MKMapItem]
     @Binding var showContent: Bool
     @State private var showAll = false
     
@@ -28,7 +29,7 @@ struct CoffeeShopSection: View {
             
             ScrollView(.horizontal, showsIndicators: false) {
                 HStack(spacing: 16) {
-                    ForEach(Array(shops.prefix(3))) { shop in
+                    ForEach(Array(shops.prefix(3)), id: \.self) { shop in
                         CoffeeCard(shop: shop, viewModel: viewModel)
                             .transition(.slide)
                     }
@@ -40,7 +41,7 @@ struct CoffeeShopSection: View {
         .offset(y: showContent ? 0 : 20)
         .sheet(isPresented: $showAll) {
             NavigationView {
-                List(Array(shops)) { shop in
+                List(shops, id: \.self) { shop in
                     CoffeeListItem(showAll: $showAll, shop: shop, viewModel: viewModel)
                 }
                 .navigationTitle("\(title)")
