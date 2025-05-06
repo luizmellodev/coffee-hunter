@@ -48,7 +48,6 @@ struct CoffeeShop: Identifiable, Equatable, Codable, Hashable {
         lhs.id == rhs.id
     }
     
-    // Add hash function for Hashable conformance
     func hash(into hasher: inout Hasher) {
         hasher.combine(id)
     }

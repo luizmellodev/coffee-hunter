@@ -26,22 +26,12 @@ struct MapView: View {
                     Spacer()
                     
                     if !viewModel.coffeeShopService.coffeeShops.isEmpty {
-                        MapBottomSheet(viewModel: viewModel, selectedIndex: $selectedIndex)
+                        MapBottomTabView(viewModel: viewModel, selectedIndex: $selectedIndex)
                             .padding(.bottom)
                     }
                 }
             }
             .navigationTitle("Find Cafes")
-            .sheet(isPresented: $showCoffeeRoute) {
-                CoffeeRouteView(viewModel: viewModel)
-            }
-            .overlay {
-                if viewModel.showAchievementAlert,
-                   let achievement = viewModel.lastAchievement {
-                    AchievementOverlay(mission: achievement)
-                        .animation(.easeInOut, value: viewModel.showAchievementAlert)
-                }
-            }
         }
     }
 }

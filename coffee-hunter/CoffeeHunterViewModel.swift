@@ -7,7 +7,6 @@ class CoffeeHunterViewModel: ObservableObject {
     @Published var selectedLocation: CLLocationCoordinate2D?
     @Published var selectedCoffeeShop: CoffeeShop?
     @Published var showAchievementAlert = false
-    @Published var lastAchievement: Mission?
     @Published var selectedTab: Int = 0
 
     @Published var dataManager = CoffeeHunterDataManager()
