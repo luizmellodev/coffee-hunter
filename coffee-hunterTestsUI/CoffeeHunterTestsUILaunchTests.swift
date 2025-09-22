@@ -1,5 +1,5 @@
 //
-//  coffee_hunterTestsUILaunchTests.swift
+//  CoffeeHunterTestsUILaunchTests.swift
 //  coffee-hunterTestsUI
 //
 //  Created by Luiz Mello on 22/09/25.
@@ -7,9 +7,8 @@
 
 import XCTest
 
-final class coffee_hunterTestsUILaunchTests: XCTestCase {
-
-    override class var runsForEachTargetApplicationUIConfiguration: Bool {
+final class CoffeeHunterTestsUILaunchTests: XCTestCase {
+    override static var runsForEachTargetApplicationUIConfiguration: Bool {
         true
     }
 
