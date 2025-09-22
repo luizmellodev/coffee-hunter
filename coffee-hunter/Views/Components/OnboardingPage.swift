@@ -12,7 +12,7 @@ struct OnboardingPage: View {
     let description: String
     let imageName: String
     var isLast: Bool = false
-    var hasSeenOnboarding: Binding<Bool>? = nil
+    var hasSeenOnboarding: Binding<Bool>?
     let icon: AnyView
     
     init(

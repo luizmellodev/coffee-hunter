@@ -5,7 +5,6 @@
 //  Created by Luiz Mello on 26/03/25.
 //
 
-
 import SwiftUI
 
 struct CoffeeListItem: View {

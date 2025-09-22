@@ -9,7 +9,7 @@ import SwiftUI
 
 struct FavoritesView: View {
     @ObservedObject var viewModel: CoffeeHunterViewModel
-    @State private var selectedShop: CoffeeShop? = nil
+    @State private var selectedShop: CoffeeShop?
     
     var body: some View {
         NavigationStack {

@@ -103,7 +103,11 @@ struct HomeView: View {
                                                 endPoint: .bottomTrailing
                                             )
                                         )
-                                        .shadow(color: Color(red: 0.6, green: 0.4, blue: 0.3).opacity(0.3), radius: 10, y: 5)
+                                        .shadow(
+                                            color: Color(red: 0.6, green: 0.4, blue: 0.3).opacity(0.3),
+                                            radius: 10,
+                                            y: 5
+                                        )
                                 )
                                 .foregroundColor(.white)
                             }
@@ -148,7 +152,6 @@ struct HomeView: View {
             )
             .refreshable(action: {
                 viewModel.refreshLocation()
-
             })
         }
         .onAppear {

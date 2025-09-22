@@ -5,7 +5,6 @@
 //  Created by Luiz Mello on 24/03/25.
 //
 
-
 import SwiftUI
 import MapKit
 import CoreLocation
@@ -25,7 +24,7 @@ class CoffeeShopService: ObservableObject {
         request.pointOfInterestFilter = MKPointOfInterestFilter(including: [.cafe])
         
         let search = MKLocalSearch(request: request)
-        search.start { [weak self] response, error in
+        search.start { [weak self] response, _ in
             guard let response = response else { return }
             
             let userLocation = CLLocation(latitude: location.latitude, longitude: location.longitude)
@@ -50,7 +49,7 @@ class CoffeeShopService: ObservableObject {
         }
     }
     
-    private func formatAddress(_ placemark: MKPlacemark) -> String {
+    func formatAddress(_ placemark: MKPlacemark) -> String {
         let street = placemark.thoroughfare ?? ""
         let number = placemark.subThoroughfare ?? ""
         return "\(number) \(street)".trimmingCharacters(in: .whitespaces)

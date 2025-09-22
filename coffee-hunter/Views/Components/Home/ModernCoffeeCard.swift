@@ -23,7 +23,7 @@ struct ModernCoffeeCard: View {
         "heart.fill"
     ]
     
-    private func randomIcon() -> String  {
+    private func randomIcon() -> String {
         coffeeIcons.randomElement() ?? "cup.and.saucer.fill"
     }
     

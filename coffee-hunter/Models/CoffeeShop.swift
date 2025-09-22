@@ -23,7 +23,14 @@ struct CoffeeShop: Identifiable, Equatable, Codable, Hashable {
     let longitude: Double
     var isLiked: Bool
     
-    init(name: String, rating: Double, distance: Double, address: String, coordinates: CLLocationCoordinate2D, mapItem: MKMapItem) {
+    init(
+        name: String,
+        rating: Double,
+        distance: Double,
+        address: String,
+        coordinates: CLLocationCoordinate2D,
+        mapItem: MKMapItem
+    ) {
         self.name = name
         self.rating = rating
         self.distance = distance

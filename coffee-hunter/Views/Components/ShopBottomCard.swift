@@ -75,7 +75,7 @@ struct ShopBottomCard: View {
 // Add searchLocation helper function
 func searchLocation(_ query: String, viewModel: CoffeeHunterViewModel) {
     let geocoder = CLGeocoder()
-    geocoder.geocodeAddressString(query) { placemarks, error in
+    geocoder.geocodeAddressString(query) { placemarks, _ in
         if let location = placemarks?.first?.location?.coordinate {
             // Calculate distance from user location
             if let userLocation = viewModel.locationManager.userLocation {
