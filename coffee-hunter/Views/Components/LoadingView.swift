@@ -63,24 +63,24 @@ struct Cup: Shape {
         
         // Draw cup shape
         path.addPath(
-            Path { p in
-                p.move(to: CGPoint(x: rect.minX + 10, y: rect.maxY))
-                p.addCurve(
+            Path { path in
+                path.move(to: CGPoint(x: rect.minX + 10, y: rect.maxY))
+                path.addCurve(
                     to: CGPoint(x: rect.maxX - 10, y: rect.maxY),
                     control1: CGPoint(x: rect.minX + 10, y: rect.maxY),
                     control2: CGPoint(x: rect.maxX - 10, y: rect.maxY)
                 )
-                p.addCurve(
+                path.addCurve(
                     to: CGPoint(x: rect.maxX, y: rect.minY + 20),
                     control1: CGPoint(x: rect.maxX - 5, y: rect.maxY - 20),
                     control2: CGPoint(x: rect.maxX, y: rect.maxY - 40)
                 )
-                p.addCurve(
+                path.addCurve(
                     to: CGPoint(x: rect.minX, y: rect.minY + 20),
                     control1: CGPoint(x: rect.maxX, y: rect.minY + 20),
                     control2: CGPoint(x: rect.minX, y: rect.minY + 20)
                 )
-                p.addCurve(
+                path.addCurve(
                     to: CGPoint(x: rect.minX + 10, y: rect.maxY),
                     control1: CGPoint(x: rect.minX, y: rect.maxY - 40),
                     control2: CGPoint(x: rect.minX + 5, y: rect.maxY - 20)
@@ -90,14 +90,14 @@ struct Cup: Shape {
         
         // Add handle
         path.addPath(
-            Path { p in
-                p.move(to: CGPoint(x: rect.maxX - 5, y: rect.midY))
-                p.addCurve(
+            Path { path in
+                path.move(to: CGPoint(x: rect.maxX - 5, y: rect.midY))
+                path.addCurve(
                     to: CGPoint(x: rect.maxX + 20, y: rect.midY),
                     control1: CGPoint(x: rect.maxX + 5, y: rect.midY - 20),
                     control2: CGPoint(x: rect.maxX + 20, y: rect.midY - 20)
                 )
-                p.addCurve(
+                path.addCurve(
                     to: CGPoint(x: rect.maxX - 5, y: rect.midY + 30),
                     control1: CGPoint(x: rect.maxX + 20, y: rect.midY + 20),
                     control2: CGPoint(x: rect.maxX + 5, y: rect.midY + 40)

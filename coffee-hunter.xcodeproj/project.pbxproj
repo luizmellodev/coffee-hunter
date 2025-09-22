@@ -6,11 +6,40 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXContainerItemProxy section */
+		7909E12C2E81C6540057A0F6 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 79C702232D919BC8005C26A7 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 79C7022A2D919BC8005C26A7;
+			remoteInfo = "coffee-hunter";
+		};
+		7909E1412E81C66F0057A0F6 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 79C702232D919BC8005C26A7 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 79C7022A2D919BC8005C26A7;
+			remoteInfo = "coffee-hunter";
+		};
+/* End PBXContainerItemProxy section */
+
 /* Begin PBXFileReference section */
+		7909E1282E81C6540057A0F6 /* coffee-hunterTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "coffee-hunterTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		7909E13B2E81C66F0057A0F6 /* coffee-hunterTestsUI.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "coffee-hunterTestsUI.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		79C7022B2D919BC8005C26A7 /* coffee-hunter.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "coffee-hunter.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
+		7909E1292E81C6540057A0F6 /* coffee-hunterTests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = "coffee-hunterTests";
+			sourceTree = "<group>";
+		};
+		7909E13C2E81C66F0057A0F6 /* coffee-hunterTestsUI */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = "coffee-hunterTestsUI";
+			sourceTree = "<group>";
+		};
 		79C7022D2D919BC8005C26A7 /* coffee-hunter */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			path = "coffee-hunter";
@@ -19,6 +48,20 @@
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		7909E1252E81C6540057A0F6 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		7909E1382E81C66F0057A0F6 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		79C702282D919BC8005C26A7 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -33,6 +76,8 @@
 			isa = PBXGroup;
 			children = (
 				79C7022D2D919BC8005C26A7 /* coffee-hunter */,
+				7909E1292E81C6540057A0F6 /* coffee-hunterTests */,
+				7909E13C2E81C66F0057A0F6 /* coffee-hunterTestsUI */,
 				79C7022C2D919BC8005C26A7 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -41,6 +86,8 @@
 			isa = PBXGroup;
 			children = (
 				79C7022B2D919BC8005C26A7 /* coffee-hunter.app */,
+				7909E1282E81C6540057A0F6 /* coffee-hunterTests.xctest */,
+				7909E13B2E81C66F0057A0F6 /* coffee-hunterTestsUI.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -48,6 +95,52 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		7909E1272E81C6540057A0F6 /* coffee-hunterTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 7909E1302E81C6540057A0F6 /* Build configuration list for PBXNativeTarget "coffee-hunterTests" */;
+			buildPhases = (
+				7909E1242E81C6540057A0F6 /* Sources */,
+				7909E1252E81C6540057A0F6 /* Frameworks */,
+				7909E1262E81C6540057A0F6 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				7909E12D2E81C6540057A0F6 /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				7909E1292E81C6540057A0F6 /* coffee-hunterTests */,
+			);
+			name = "coffee-hunterTests";
+			packageProductDependencies = (
+			);
+			productName = "coffee-hunterTests";
+			productReference = 7909E1282E81C6540057A0F6 /* coffee-hunterTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		7909E13A2E81C66F0057A0F6 /* coffee-hunterTestsUI */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 7909E1432E81C66F0057A0F6 /* Build configuration list for PBXNativeTarget "coffee-hunterTestsUI" */;
+			buildPhases = (
+				7909E1372E81C66F0057A0F6 /* Sources */,
+				7909E1382E81C66F0057A0F6 /* Frameworks */,
+				7909E1392E81C66F0057A0F6 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				7909E1422E81C66F0057A0F6 /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				7909E13C2E81C66F0057A0F6 /* coffee-hunterTestsUI */,
+			);
+			name = "coffee-hunterTestsUI";
+			packageProductDependencies = (
+			);
+			productName = "coffee-hunterTestsUI";
+			productReference = 7909E13B2E81C66F0057A0F6 /* coffee-hunterTestsUI.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
 		79C7022A2D919BC8005C26A7 /* coffee-hunter */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 79C702392D919BC9005C26A7 /* Build configuration list for PBXNativeTarget "coffee-hunter" */;
@@ -77,9 +170,17 @@
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
-				LastSwiftUpdateCheck = 1620;
+				LastSwiftUpdateCheck = 2600;
 				LastUpgradeCheck = 1620;
 				TargetAttributes = {
+					7909E1272E81C6540057A0F6 = {
+						CreatedOnToolsVersion = 26.0;
+						TestTargetID = 79C7022A2D919BC8005C26A7;
+					};
+					7909E13A2E81C66F0057A0F6 = {
+						CreatedOnToolsVersion = 26.0;
+						TestTargetID = 79C7022A2D919BC8005C26A7;
+					};
 					79C7022A2D919BC8005C26A7 = {
 						CreatedOnToolsVersion = 16.2;
 					};
@@ -100,11 +201,27 @@
 			projectRoot = "";
 			targets = (
 				79C7022A2D919BC8005C26A7 /* coffee-hunter */,
+				7909E1272E81C6540057A0F6 /* coffee-hunterTests */,
+				7909E13A2E81C66F0057A0F6 /* coffee-hunterTestsUI */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		7909E1262E81C6540057A0F6 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		7909E1392E81C66F0057A0F6 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		79C702292D919BC8005C26A7 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -115,6 +232,20 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		7909E1242E81C6540057A0F6 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		7909E1372E81C66F0057A0F6 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		79C702272D919BC8005C26A7 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -124,7 +255,106 @@
 		};
 /* End PBXSourcesBuildPhase section */
 
+/* Begin PBXTargetDependency section */
+		7909E12D2E81C6540057A0F6 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 79C7022A2D919BC8005C26A7 /* coffee-hunter */;
+			targetProxy = 7909E12C2E81C6540057A0F6 /* PBXContainerItemProxy */;
+		};
+		7909E1422E81C66F0057A0F6 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 79C7022A2D919BC8005C26A7 /* coffee-hunter */;
+			targetProxy = 7909E1412E81C66F0057A0F6 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
 /* Begin XCBuildConfiguration section */
+		7909E12E2E81C6540057A0F6 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = W795AQWUXY;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "luizmello.coffee-hunterTests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/coffee-hunter.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/coffee-hunter";
+			};
+			name = Debug;
+		};
+		7909E12F2E81C6540057A0F6 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = W795AQWUXY;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "luizmello.coffee-hunterTests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/coffee-hunter.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/coffee-hunter";
+			};
+			name = Release;
+		};
+		7909E1442E81C66F0057A0F6 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = W795AQWUXY;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "luizmello.coffee-hunterTestsUI";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = "coffee-hunter";
+			};
+			name = Debug;
+		};
+		7909E1452E81C66F0057A0F6 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = W795AQWUXY;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "luizmello.coffee-hunterTestsUI";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = "coffee-hunter";
+			};
+			name = Release;
+		};
 		79C702372D919BC9005C26A7 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -319,6 +549,24 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		7909E1302E81C6540057A0F6 /* Build configuration list for PBXNativeTarget "coffee-hunterTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				7909E12E2E81C6540057A0F6 /* Debug */,
+				7909E12F2E81C6540057A0F6 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		7909E1432E81C66F0057A0F6 /* Build configuration list for PBXNativeTarget "coffee-hunterTestsUI" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				7909E1442E81C66F0057A0F6 /* Debug */,
+				7909E1452E81C66F0057A0F6 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		79C702262D919BC8005C26A7 /* Build configuration list for PBXProject "coffee-hunter" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (

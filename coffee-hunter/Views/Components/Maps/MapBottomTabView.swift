@@ -5,7 +5,6 @@
 //  Created by Luiz Mello on 24/03/25.
 //
 
-
 import SwiftUI
 
 struct MapBottomTabView: View {
@@ -18,7 +17,11 @@ struct MapBottomTabView: View {
                 .sorted { $0.distance < $1.distance }
             ) { shop in
                 ShopBottomCard(shop: shop)
-                    .tag(viewModel.coffeeShopService.coffeeShops.sorted { $0.distance < $1.distance }.firstIndex(of: shop) ?? 0)
+                    .tag(
+                        viewModel.coffeeShopService.coffeeShops
+                            .sorted { $0.distance < $1.distance }
+                            .firstIndex(of: shop) ?? 0
+                    )
             }
         }
         .frame(height: 180)

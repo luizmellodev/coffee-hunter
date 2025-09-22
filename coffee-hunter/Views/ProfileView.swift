@@ -79,7 +79,11 @@ struct ProfileView: View {
                 .bold()
             
             HStack(spacing: 30) {
-                statItem(count: viewModel.dataManager.visitHistory.count, title: "Visits", icon: "checkmark.circle.fill")
+                statItem(
+                    count: viewModel.dataManager.visitHistory.count,
+                    title: "Visits",
+                    icon: "checkmark.circle.fill"
+                )
                 statItem(count: viewModel.dataManager.favorites.count, title: "Favorites", icon: "heart.fill")
                 statItem(count: calculateUniquePlaces(), title: "Places", icon: "map.fill")
             }

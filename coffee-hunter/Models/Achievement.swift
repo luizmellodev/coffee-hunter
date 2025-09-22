@@ -5,7 +5,6 @@
 //  Created by Luiz Mello on 24/03/25.
 //
 
-
 import Foundation
 
 struct Achievement: Identifiable {
