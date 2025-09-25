@@ -21,8 +21,6 @@ struct CoffeeShop: Identifiable, Equatable, Codable, Hashable {
     let address: String
     let latitude: Double
     let longitude: Double
-    var isLiked: Bool
-    
     init(
         name: String,
         rating: Double,
@@ -35,7 +33,6 @@ struct CoffeeShop: Identifiable, Equatable, Codable, Hashable {
         self.rating = rating
         self.distance = distance
         self.address = address
-        self.isLiked = false
         self.latitude = coordinates.latitude
         self.longitude = coordinates.longitude
     }

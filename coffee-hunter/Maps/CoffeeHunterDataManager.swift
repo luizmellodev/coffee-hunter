@@ -45,9 +45,12 @@ class CoffeeHunterDataManager: ObservableObject {
     func addFavorite(_ shop: CoffeeShop) {
         if !favorites.contains(where: { $0.id == shop.id }) {
             DispatchQueue.main.async {
-                self.favorites.append(shop)
-                self.saveData()
+                var newFavorites = self.favorites
+                newFavorites.append(shop)
+                print("Debug: Adding to favorites - New count: \(newFavorites.count)")
                 self.objectWillChange.send()
+                self.favorites = newFavorites
+                self.saveData()
             }
         }
     }
@@ -55,19 +58,18 @@ class CoffeeHunterDataManager: ObservableObject {
     func removeFavorite(_ shop: CoffeeShop) {
         if let index = favorites.firstIndex(where: { $0.id == shop.id }) {
             DispatchQueue.main.async {
-                self.favorites.remove(at: index)
-                self.saveData()
+                var newFavorites = self.favorites
+                newFavorites.remove(at: index)
                 self.objectWillChange.send()
+                self.favorites = newFavorites
+                self.saveData()
             }
         }
     }
     
     func clearVisitHistory() {
-        DispatchQueue.main.async {
-            self.visitHistory.removeAll()
-            UserDefaults.standard.removeObject(forKey: self.kVisitedCoffeeShops)
-            self.objectWillChange.send()
-        }
+        visitHistory.removeAll()
+        UserDefaults.standard.removeObject(forKey: kVisitedCoffeeShops)
     }
     
     func getRandomCoffeeShop(from shops: [CoffeeShop], userLocation: CLLocation) -> CoffeeShop? {

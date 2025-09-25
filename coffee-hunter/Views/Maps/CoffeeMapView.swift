@@ -12,13 +12,26 @@ import SwiftUI
 struct CoffeeMapView: View {
     @ObservedObject var viewModel: CoffeeHunterViewModel
     @Binding var selectedIndex: Int
-    @State private var position: MapCameraPosition = .userLocation(fallback: .automatic)
+    @State private var position: MapCameraPosition
+    
+    init(viewModel: CoffeeHunterViewModel, selectedIndex: Binding<Int>) {
+        self.viewModel = viewModel
+        self._selectedIndex = selectedIndex
+        
+        if let selectedLocation = viewModel.selectedLocation {
+            self._position = State(initialValue: .region(MKCoordinateRegion(
+                center: selectedLocation,
+                span: MKCoordinateSpan(latitudeDelta: 0.05, longitudeDelta: 0.05)
+            )))
+        } else {
+            self._position = State(initialValue: .userLocation(fallback: .automatic))
+        }
+    }
     
     var body: some View {
-        let _ = Self._printChanges()
         ZStack(alignment: .bottom) {
             Map(position: $position, selection: $viewModel.selectedCoffeeShop) {
-                ForEach(viewModel.coffeeShopService.coffeeShops) { shop in
+                ForEach(viewModel.coffeeShops) { shop in
                     Marker(shop.name, coordinate: shop.coordinates)
                         .tint(viewModel.selectedCoffeeShop?.id == shop.id ? .brown : .gray)
                         .tag(shop)
@@ -27,12 +40,7 @@ struct CoffeeMapView: View {
             }
             .mapStyle(.standard)
             .mapControls {
-                MapUserLocationButton()
-                    .buttonBorderShape(.circle)
-                    .tint(.white)
-                    .padding()
-                    .background(.ultraThinMaterial)
-                    .clipShape(Circle())
+                mapControlsView
             }
         }
         .onReceive(viewModel.$selectedLocation) { location in
@@ -45,7 +53,7 @@ struct CoffeeMapView: View {
             }
         }
         .onChange(of: selectedIndex) { _, newIndex in
-            let sortedShops = viewModel.coffeeShopService.coffeeShops.sorted { $0.distance < $1.distance }
+            let sortedShops = viewModel.sortedCoffeeShopsByDistance
             guard newIndex < sortedShops.count else { return }
             
             let shop = sortedShops[newIndex]
@@ -55,11 +63,40 @@ struct CoffeeMapView: View {
         .onChange(of: viewModel.selectedCoffeeShop) { _, shop in
             guard let shop = shop else { return }
             updateRegion(for: shop)
-            
-            if let index = viewModel.coffeeShopService.coffeeShops
-                .sorted(by: { $0.distance < $1.distance })
-                .firstIndex(of: shop) {
-                selectedIndex = index
+            selectedIndex = viewModel.getShopIndex(shop)
+        }
+    }
+    
+    private var mapControlsView: some View {
+        VStack(spacing: 8) {
+            if viewModel.selectedLocation != nil {
+                Button {
+                    withAnimation {
+                        position = .region(MKCoordinateRegion(
+                            center: viewModel.selectedLocation!,
+                            span: MKCoordinateSpan(latitudeDelta: 0.05, longitudeDelta: 0.05)
+                        ))
+                    }
+                } label: {
+                    VStack(spacing: 4) {
+                        Image(systemName: "mappin.circle.fill")
+                            .font(.system(size: 22))
+                        Text("Search Area")
+                            .font(.caption2)
+                    }
+                }
+                .buttonBorderShape(.circle)
+                .tint(.brown)
+                .padding()
+                .background(.ultraThinMaterial)
+                .clipShape(Circle())
+            } else {
+                MapUserLocationButton()
+                    .buttonBorderShape(.circle)
+                    .tint(.blue)
+                    .padding()
+                    .background(.ultraThinMaterial)
+                    .clipShape(Circle())
             }
         }
     }

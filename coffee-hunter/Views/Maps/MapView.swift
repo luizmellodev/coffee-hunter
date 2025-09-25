@@ -25,7 +25,7 @@ struct MapView: View {
                     
                     Spacer()
                     
-                    if !viewModel.coffeeShopService.coffeeShops.isEmpty {
+                    if !viewModel.coffeeShops.isEmpty {
                         MapBottomTabView(viewModel: viewModel, selectedIndex: $selectedIndex)
                             .padding(.bottom)
                     }

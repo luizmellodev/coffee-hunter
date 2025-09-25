@@ -13,11 +13,11 @@ struct VisitHistoryView: View {
     
     var body: some View {
         ScrollView {
-            if viewModel.dataManager.visitHistory.isEmpty {
+            if !viewModel.hasVisitHistory {
                 emptyStateView
             } else {
                 LazyVStack(spacing: 16) {
-                    ForEach(viewModel.dataManager.visitHistory) { visit in
+                    ForEach(viewModel.visitHistory) { visit in
                         VisitCard(visit: visit)
                             .transition(.scale.combined(with: .opacity))
                     }
@@ -27,7 +27,7 @@ struct VisitHistoryView: View {
         }
         .navigationTitle("Visit History")
         .toolbar {
-            if !viewModel.dataManager.visitHistory.isEmpty {
+            if viewModel.hasVisitHistory {
                 ToolbarItem(placement: .topBarTrailing) {
                     Button(action: { showingClearConfirmation = true }) {
                         Image(systemName: "trash")
@@ -39,7 +39,7 @@ struct VisitHistoryView: View {
         .alert("Clear History", isPresented: $showingClearConfirmation) {
             Button("Clear", role: .destructive) {
                 withAnimation {
-                    viewModel.dataManager.clearVisitHistory()
+                    viewModel.clearVisitHistory()
                 }
             }
             Button("Cancel", role: .cancel) {}

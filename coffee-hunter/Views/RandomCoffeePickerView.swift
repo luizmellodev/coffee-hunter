@@ -32,7 +32,7 @@ struct RandomCoffeePickerView: View {
             }
             .onAppear {
                 print("Debug: RandomCoffeePickerView appeared")
-                if viewModel.coffeeShopService.coffeeShops.isEmpty {
+                if viewModel.coffeeShops.isEmpty {
                     print("Debug: No coffee shops loaded, fetching...")
                     if let location = viewModel.locationManager.userLocation {
                         viewModel.updateLocation(location)
@@ -188,14 +188,11 @@ struct RandomCoffeePickerView: View {
         }
         
         let userLocation = CLLocation(latitude: coordinate.latitude, longitude: coordinate.longitude)
-        print("Debug: Available coffee shops: \(viewModel.coffeeShopService.coffeeShops.count)")
+        print("Debug: Available coffee shops: \(viewModel.coffeeShops.count)")
         
         // Add delay for UI feedback
         DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
-            if let shop = viewModel.dataManager.getRandomCoffeeShop(
-                from: viewModel.coffeeShopService.coffeeShops,
-                userLocation: userLocation
-            ) {
+            if let shop = viewModel.getRandomCoffeeShop(userLocation: userLocation) {
                 print("Debug: Found random shop: \(shop.name)")
                 withAnimation(.easeInOut(duration: 0.3)) {
                     self.selectedShop = shop
