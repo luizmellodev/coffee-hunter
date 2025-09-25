@@ -13,7 +13,7 @@ struct CoffeeMapView: View {
     @ObservedObject var viewModel: CoffeeHunterViewModel
     @Binding var selectedIndex: Int
     @State private var position: MapCameraPosition
-    
+
     init(viewModel: CoffeeHunterViewModel, selectedIndex: Binding<Int>) {
         self.viewModel = viewModel
         self._selectedIndex = selectedIndex
@@ -27,9 +27,10 @@ struct CoffeeMapView: View {
             self._position = State(initialValue: .userLocation(fallback: .automatic))
         }
     }
-    
+
     var body: some View {
-        ZStack(alignment: .bottom) {
+        ZStack(alignment: .bottomTrailing) {
+            // MARK: - Map
             Map(position: $position, selection: $viewModel.selectedCoffeeShop) {
                 ForEach(viewModel.coffeeShops) { shop in
                     Marker(shop.name, coordinate: shop.coordinates)
@@ -39,9 +40,38 @@ struct CoffeeMapView: View {
                 UserAnnotation()
             }
             .mapStyle(.standard)
-            .mapControls {
-                mapControlsView
+            
+            // MARK: - Buttons
+            VStack(spacing: 12) {
+                if let selectedLocation = viewModel.selectedLocation {
+                    Button {
+                        withAnimation {
+                            position = .region(MKCoordinateRegion(
+                                center: selectedLocation,
+                                span: MKCoordinateSpan(latitudeDelta: 0.05, longitudeDelta: 0.05)
+                            ))
+                        }
+                    } label: {
+                        VStack(spacing: 4) {
+                            Image(systemName: "mappin.circle.fill")
+                                .font(.system(size: 22))
+                            Text("Search Area")
+                                .font(.caption2)
+                        }
+                        .padding()
+                        .background(.ultraThinMaterial)
+                        .clipShape(Circle())
+                    }
+                } else {
+                    MapUserLocationButton()
+                        .buttonBorderShape(.circle)
+                        .tint(.blue)
+                        .padding()
+                        .background(.ultraThinMaterial)
+                        .clipShape(Circle())
+                }
             }
+            .padding()
         }
         .onReceive(viewModel.$selectedLocation) { location in
             guard let location = location else { return }
@@ -66,41 +96,7 @@ struct CoffeeMapView: View {
             selectedIndex = viewModel.getShopIndex(shop)
         }
     }
-    
-    private var mapControlsView: some View {
-        VStack(spacing: 8) {
-            if viewModel.selectedLocation != nil {
-                Button {
-                    withAnimation {
-                        position = .region(MKCoordinateRegion(
-                            center: viewModel.selectedLocation!,
-                            span: MKCoordinateSpan(latitudeDelta: 0.05, longitudeDelta: 0.05)
-                        ))
-                    }
-                } label: {
-                    VStack(spacing: 4) {
-                        Image(systemName: "mappin.circle.fill")
-                            .font(.system(size: 22))
-                        Text("Search Area")
-                            .font(.caption2)
-                    }
-                }
-                .buttonBorderShape(.circle)
-                .tint(.brown)
-                .padding()
-                .background(.ultraThinMaterial)
-                .clipShape(Circle())
-            } else {
-                MapUserLocationButton()
-                    .buttonBorderShape(.circle)
-                    .tint(.blue)
-                    .padding()
-                    .background(.ultraThinMaterial)
-                    .clipShape(Circle())
-            }
-        }
-    }
-    
+
     private func updateRegion(for shop: CoffeeShop) {
         withAnimation {
             position = .region(MKCoordinateRegion(
@@ -113,6 +109,5 @@ struct CoffeeMapView: View {
 
 #Preview {
     let viewModel = CoffeeHunterViewModel()
-    
     CoffeeMapView(viewModel: viewModel, selectedIndex: .constant(0))
 }

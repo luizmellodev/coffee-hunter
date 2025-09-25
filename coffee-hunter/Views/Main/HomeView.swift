@@ -86,7 +86,7 @@ struct HomeView: View {
                 }
             }
             
-            if let location = viewModel.selectedLocation {
+            if viewModel.selectedLocation != nil {
                 HStack {
                     Image(systemName: "location.fill")
                         .foregroundColor(.brown)
@@ -265,10 +265,8 @@ struct HomeView: View {
         return LazyVStack(spacing: 16) {
             ForEach(filteredShops) { shop in
                 ModernCoffeeCard(shop: shop, viewModel: viewModel)
-                    .transition(.slide)
             }
         }
-        .id("\(selectedFilter)-\(viewModel.favorites.count)")
         .padding(.horizontal)
         .padding(.top, 8)
         .opacity(showContent ? 1 : 0)

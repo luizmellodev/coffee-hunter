@@ -20,11 +20,8 @@ struct MapView: View {
         NavigationStack {
             ZStack(alignment: .bottom) {
                 CoffeeMapView(viewModel: viewModel, selectedIndex: $selectedIndex)
-                
                 VStack(spacing: 0) {
-                    
                     Spacer()
-                    
                     if !viewModel.coffeeShops.isEmpty {
                         MapBottomTabView(viewModel: viewModel, selectedIndex: $selectedIndex)
                             .padding(.bottom)

@@ -11,7 +11,6 @@ struct ModernCoffeeCard: View {
     let shop: CoffeeShop
     @ObservedObject var viewModel: CoffeeHunterViewModel
     @State private var showDetail = false
-    @State private var isHovered = false
     
     private var isFavorite: Bool {
         viewModel.favorites.contains(where: { $0.id == shop.id })
@@ -39,39 +38,34 @@ struct ModernCoffeeCard: View {
                             )
                         )
                 }
-                
                 Spacer()
-                
                 HStack(spacing: 8) {
-                    if isFavorite {
-                        Label("Favorite", systemImage: "heart.fill")
-                            .font(.caption)
-                            .foregroundColor(.red)
-                            .padding(.horizontal, 8)
-                            .padding(.vertical, 4)
-                            .background(Color.red.opacity(0.1))
-                            .clipShape(Capsule())
-                    }
+                    Label("Top Rated", systemImage: "star.fill")
+                        .font(.caption)
+                        .foregroundColor(.yellow.opacity(0.8))
+                        .padding(.horizontal, 8)
+                        .padding(.vertical, 4)
+                        .background(Color.yellow.opacity(0.1))
+                        .clipShape(Capsule())
+                        .opacity(shop.rating >= 4.5 ? 1 : 0)
+                
+                    Label("Nearby", systemImage: "location.fill")
+                        .font(.caption)
+                        .foregroundColor(.blue)
+                        .padding(.horizontal, 8)
+                        .padding(.vertical, 4)
+                        .background(Color.blue.opacity(0.1))
+                        .clipShape(Capsule())
+                        .opacity(shop.distance <= 1.0 ? 1 : 0)
                     
-                    if shop.rating >= 4.5 {
-                        Label("Top Rated", systemImage: "star.fill")
-                            .font(.caption)
-                            .foregroundColor(.yellow)
-                            .padding(.horizontal, 8)
-                            .padding(.vertical, 4)
-                            .background(Color.yellow.opacity(0.1))
-                            .clipShape(Capsule())
-                    }
-                    
-                    if shop.distance <= 1.0 {
-                        Label("Nearby", systemImage: "location.fill")
-                            .font(.caption)
-                            .foregroundColor(.blue)
-                            .padding(.horizontal, 8)
-                            .padding(.vertical, 4)
-                            .background(Color.blue.opacity(0.1))
-                            .clipShape(Capsule())
-                    }
+                    Label("Favorite", systemImage: "heart.fill")
+                        .font(.caption)
+                        .foregroundColor(.red)
+                        .padding(.horizontal, 8)
+                        .padding(.vertical, 4)
+                        .background(Color.red.opacity(0.1))
+                        .clipShape(Capsule())
+                        .opacity(isFavorite ? 1 : 0)
                 }
             }
             .padding(.horizontal, 16)
@@ -106,15 +100,15 @@ struct ModernCoffeeCard: View {
             
             HStack(spacing: 12) {
                 Button {
-                    withAnimation(.spring(response: 0.3, dampingFraction: 0.6)) {
+                    withAnimation {
                         viewModel.toggleFavorite(shop)
                     }
                 } label: {
                     HStack {
                         Image(systemName: isFavorite ? "heart.fill" : "heart")
-                            .symbolEffect(.bounce, value: isFavorite)
                         Text(isFavorite ? "Saved" : "Save")
                     }
+                    .contentTransition(.symbolEffect(.replace))
                     .font(.subheadline)
                     .fontWeight(.medium)
                     .foregroundColor(isFavorite ? .red : .brown)
@@ -143,7 +137,6 @@ struct ModernCoffeeCard: View {
             .padding(.horizontal, 16)
             .padding(.bottom, 16)
         }
-        .id("card-\(shop.id)-\(isFavorite)")
         .frame(maxWidth: .infinity)
         .background(Color(.secondarySystemBackground))
         .clipShape(RoundedRectangle(cornerRadius: 16))
@@ -151,7 +144,6 @@ struct ModernCoffeeCard: View {
             RoundedRectangle(cornerRadius: 16)
                 .stroke(Color(.separator), lineWidth: 0.5)
         )
-        .contentShape(Rectangle())
         .onTapGesture {
             showDetail = true
         }

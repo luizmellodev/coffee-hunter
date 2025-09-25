@@ -17,29 +17,20 @@ struct CoffeeShopDetailView: View {
     @State private var showContent = false
     
     private var isFavorite: Bool {
-        viewModel.isFavorite(shop)
+        viewModel.favorites.contains(where: { $0.id == shop.id })
     }
-    
+
     var body: some View {
         ScrollView {
             VStack(spacing: 0) {
-                // Hero Section
                 heroSection
                 
-                // Content
                 VStack(spacing: 24) {
-                    // Quick Actions
                     quickActionsSection
-                    
-                    // Info Cards
                     infoCardsSection
-                    
-                    // Visit History
                     if visitCount > 0 {
                         visitHistorySection
                     }
-                    
-                    // Action Buttons
                     actionButtonsSection
                 }
                 .padding()
@@ -135,13 +126,16 @@ struct CoffeeShopDetailView: View {
         HStack(spacing: 16) {
             // Favorite Button
             Button {
-                viewModel.toggleFavorite(shop)
+                withAnimation {
+                    viewModel.toggleFavorite(shop)
+                }
             } label: {
                 VStack(spacing: 8) {
                     Image(systemName: isFavorite ? "heart.fill" : "heart")
+                        .contentTransition(.symbolEffect(.replace))
                         .font(.title2)
                         .foregroundColor(isFavorite ? .red : .primary)
-                    
+
                     Text(isFavorite ? "Saved" : "Save")
                         .font(.caption)
                         .foregroundColor(.secondary)
@@ -154,7 +148,9 @@ struct CoffeeShopDetailView: View {
             
             // Check-in Button
             Button {
-                showCheckInConfirmation = true
+                withAnimation {
+                    showCheckInConfirmation = true
+                }
             } label: {
                 VStack(spacing: 8) {
                     Image(systemName: hasVisitedToday ? "checkmark.circle.fill" : "checkmark.circle")
