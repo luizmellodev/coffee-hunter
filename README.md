@@ -9,6 +9,7 @@ A SwiftUI app that helps you discover and track coffee shops near you using MapK
 - Track visit history
 - Achievement system
 - Premium features
+- Custom location search
 
 ## Development
 
@@ -68,34 +69,34 @@ The CI pipeline runs on every pull request and push to main, performing:
 
 ### Running Locally
 
-O projeto inclui um Makefile para facilitar a execução de comandos comuns. Para ver todos os comandos disponíveis:
+The project includes a Makefile to simplify running common commands. To see all available commands:
 
 ```bash
 make help
 ```
 
-Comandos principais:
+Main commands:
 
 ```bash
-# Instalar dependências (SwiftLint)
+# Install dependencies (SwiftLint)
 make install-deps
 
-# Executar SwiftLint
+# Run SwiftLint
 make lint
 
-# Compilar o projeto
+# Build the project
 make build
 
-# Executar todos os testes
+# Run all tests
 make test
 
-# Executar apenas testes unitários
+# Run only unit tests
 make test-unit
 
-# Executar apenas testes de UI
+# Run only UI tests
 make test-ui
 
-# Executar todas as verificações de CI localmente
+# Run all CI checks locally
 make ci
 ```
 

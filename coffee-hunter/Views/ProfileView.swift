@@ -37,16 +37,28 @@ struct ProfileView: View {
     var body: some View {
         NavigationStack {
             ScrollView {
-                VStack(spacing: 20) {
+                VStack(spacing: 25) {
                     statsSection
-                    achievementsSection
-                    actionsSection
+                        .padding(.horizontal)
+                    
+                    VStack(spacing: 25) {
+                        achievementsSection
+                        actionsSection
+                    }
+                    .padding()
+                    .background(Color(.secondarySystemBackground))
+                    .clipShape(RoundedRectangle(cornerRadius: 25, style: .continuous))
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 25, style: .continuous)
+                            .stroke(Color(.separator), lineWidth: 0.5)
+                    )
                 }
-                .padding()
+                .padding(.vertical)
             }
+            .background(Color(.systemBackground))
             .navigationTitle("Profile")
             .sheet(isPresented: $showingLocationPicker) {
-                Text("Location Picker Coming Soon")
+                LocationPickerView(viewModel: viewModel)
             }
         }
     }
@@ -114,30 +126,53 @@ struct ProfileView: View {
     }
     
     private var achievementsSection: some View {
-        VStack(alignment: .leading, spacing: 12) {
-            Text("Achievements")
-                .font(.title3)
-                .bold()
-                .padding(.horizontal)
+        VStack(alignment: .leading, spacing: 16) {
+            HStack {
+                Text("Achievements")
+                    .font(.title3)
+                    .bold()
+                
+                Spacer()
+                
+                Text("\(achievements.filter(\.isUnlocked).count)/\(achievements.count)")
+                    .font(.subheadline)
+                    .foregroundColor(.secondary)
+                    .padding(.horizontal, 12)
+                    .padding(.vertical, 6)
+                    .background(Color(.systemBackground))
+                    .clipShape(Capsule())
+            }
             
             ForEach(achievements) { achievement in
                 AchievementRow(achievement: achievement)
+                    .background(Color(.systemBackground))
+                    .clipShape(RoundedRectangle(cornerRadius: 12))
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 12)
+                            .stroke(Color(.separator), lineWidth: 0.5)
+                    )
             }
         }
     }
     
     private var actionsSection: some View {
-        VStack(spacing: 12) {
-            NavigationLink(destination: FavoritesView(viewModel: viewModel)) {
-                ActionButton(title: "My Favorites", icon: "heart.fill", color: .pink)
-            }
+        VStack(alignment: .leading, spacing: 16) {
+            Text("Quick Actions")
+                .font(.title3)
+                .bold()
             
-            NavigationLink(destination: VisitHistoryView(viewModel: viewModel)) {
-                ActionButton(title: "Visit History", icon: "clock.fill", color: .brown)
-            }
-            
-            Button(action: { showingLocationPicker = true }) {
-                ActionButton(title: "Change Location", icon: "location.fill", color: .blue)
+            VStack(spacing: 12) {
+                NavigationLink(destination: FavoritesView(viewModel: viewModel)) {
+                    ActionButton(title: "My Favorites", icon: "heart.fill", color: .pink)
+                }
+                
+                NavigationLink(destination: VisitHistoryView(viewModel: viewModel)) {
+                    ActionButton(title: "Visit History", icon: "clock.fill", color: .brown)
+                }
+                
+                Button(action: { showingLocationPicker = true }) {
+                    ActionButton(title: "Change Location", icon: "location.fill", color: .blue)
+                }
             }
         }
     }

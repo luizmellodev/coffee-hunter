@@ -181,7 +181,7 @@ struct RandomCoffeePickerView: View {
         rotationAngle = 0
         print("Debug: Starting pickRandomShop")
         
-        guard let coordinate = viewModel.locationManager.userLocation else {
+        guard let coordinate = viewModel.selectedLocation ?? viewModel.locationManager.userLocation else {
             print("Debug: No user location available")
             isLoading = false
             return

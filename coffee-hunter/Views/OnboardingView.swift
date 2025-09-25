@@ -9,61 +9,138 @@ import SwiftUI
 
 struct OnboardingView: View {
     @Binding var hasSeenOnboarding: Bool
+    @State private var currentPage = 0
     
     var body: some View {
-        TabView {
+        TabView(selection: $currentPage) {
             OnboardingPage(
-                title: "Welcome Coffee Hunter",
-                description: "Your quest for the perfect cup begins here",
-                imageName: "arrow.through.heart.fill",
+                title: "Welcome to\nCoffee Hunter",
+                description: "Your journey to discover amazing coffee spots begins here. Get ready for a delightful adventure!",
+                imageName: "cup.and.saucer.fill",
                 customIcon: {
-                    HStack {
+                    ZStack {
+                        Circle()
+                            .fill(
+                                LinearGradient(
+                                    colors: [.brown.opacity(0.2), .brown.opacity(0.1)],
+                                    startPoint: .topLeading,
+                                    endPoint: .bottomTrailing
+                                )
+                            )
+                            .frame(width: 120, height: 120)
+                        
                         Image(systemName: "cup.and.saucer.fill")
-                            .font(.system(size: 60))
-                        Image(systemName: "arrow.through.heart.fill")
-                            .font(.system(size: 40))
+                            .font(.system(size: 50))
+                            .foregroundStyle(
+                                LinearGradient(
+                                    colors: [.brown, .brown.opacity(0.7)],
+                                    startPoint: .top,
+                                    endPoint: .bottom
+                                )
+                            )
+                            .symbolEffect(.bounce, options: .repeating)
+                        
+                        Circle()
+                            .strokeBorder(Color.brown.opacity(0.2), lineWidth: 2)
+                            .frame(width: 120, height: 120)
                     }
                 }
             )
+            .tag(0)
             
             OnboardingPage(
-                title: "Track Your Hunts",
-                description: "Mark conquered coffee spots and rate your discoveries",
+                title: "Discover & Track",
+                description: "Find the best coffee spots around you, save your favorites, and keep track of your coffee adventures.",
                 imageName: "map.fill",
                 customIcon: {
                     ZStack {
-                        Image(systemName: "map.fill")
-                            .font(.system(size: 70))
-                        Image(systemName: "cup.and.saucer.fill")
-                            .font(.system(size: 30))
-                            .offset(x: 10, y: -10)
+                        Circle()
+                            .fill(
+                                LinearGradient(
+                                    colors: [.brown.opacity(0.2), .brown.opacity(0.1)],
+                                    startPoint: .topLeading,
+                                    endPoint: .bottomTrailing
+                                )
+                            )
+                            .frame(width: 120, height: 120)
+                        
+                        ZStack {
+                            Image(systemName: "map.fill")
+                                .font(.system(size: 60))
+                                .foregroundStyle(
+                                    LinearGradient(
+                                        colors: [.brown, .brown.opacity(0.7)],
+                                        startPoint: .top,
+                                        endPoint: .bottom
+                                    )
+                                )
+                            
+                            Image(systemName: "cup.and.saucer.fill")
+                                .font(.system(size: 25))
+                                .foregroundColor(.brown)
+                                .offset(x: 15, y: -15)
+                                .symbolEffect(.bounce, options: .repeating)
+                        }
+                        
+                        Circle()
+                            .strokeBorder(Color.brown.opacity(0.2), lineWidth: 2)
+                            .frame(width: 120, height: 120)
                     }
-                    .foregroundColor(.brown)
                 }
             )
+            .tag(1)
             
             OnboardingPage(
-                title: "Become a Legend",
-                description: "Build your collection of conquered cafes",
+                title: "Earn Achievements",
+                description: "Become a true Coffee Hunter! Collect badges, track your progress, and unlock special rewards.",
                 imageName: "trophy.fill",
                 isLast: true,
                 hasSeenOnboarding: $hasSeenOnboarding,
                 customIcon: {
-                    VStack {
-                        Image(systemName: "trophy.fill")
-                            .font(.system(size: 60))
-                        HStack(spacing: 8) {
-                            ForEach(0..<3) { _ in
-                                Image(systemName: "cup.and.saucer.fill")
-                                    .font(.system(size: 20))
+                    ZStack {
+                        Circle()
+                            .fill(
+                                LinearGradient(
+                                    colors: [.brown.opacity(0.2), .brown.opacity(0.1)],
+                                    startPoint: .topLeading,
+                                    endPoint: .bottomTrailing
+                                )
+                            )
+                            .frame(width: 120, height: 120)
+                        
+                        VStack(spacing: 8) {
+                            Image(systemName: "trophy.fill")
+                                .font(.system(size: 45))
+                                .foregroundStyle(
+                                    LinearGradient(
+                                        colors: [.brown, .brown.opacity(0.7)],
+                                        startPoint: .top,
+                                        endPoint: .bottom
+                                    )
+                                )
+                                .symbolEffect(.bounce, options: .repeating)
+                            
+                            HStack(spacing: 4) {
+                                ForEach(0..<3) { index in
+                                    Image(systemName: "star.fill")
+                                        .font(.system(size: 12))
+                                        .foregroundColor(.brown)
+                                        .symbolEffect(.bounce, options: .repeating)
+                                        .opacity(currentPage == 2 ? 1 : 0)
+                                        .animation(.easeInOut.delay(Double(index) * 0.1), value: currentPage)
+                                }
                             }
                         }
+                        
+                        Circle()
+                            .strokeBorder(Color.brown.opacity(0.2), lineWidth: 2)
+                            .frame(width: 120, height: 120)
                     }
-                    .foregroundColor(.brown)
                 }
             )
+            .tag(2)
         }
-        .tabViewStyle(.page)
+        .tabViewStyle(.page(indexDisplayMode: .always))
         .indexViewStyle(.page(backgroundDisplayMode: .always))
     }
 }

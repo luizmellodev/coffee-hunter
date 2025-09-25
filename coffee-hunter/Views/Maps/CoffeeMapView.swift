@@ -15,6 +15,7 @@ struct CoffeeMapView: View {
     @State private var position: MapCameraPosition = .userLocation(fallback: .automatic)
     
     var body: some View {
+        let _ = Self._printChanges()
         ZStack(alignment: .bottom) {
             Map(position: $position, selection: $viewModel.selectedCoffeeShop) {
                 ForEach(viewModel.coffeeShopService.coffeeShops) { shop in
@@ -32,6 +33,15 @@ struct CoffeeMapView: View {
                     .padding()
                     .background(.ultraThinMaterial)
                     .clipShape(Circle())
+            }
+        }
+        .onReceive(viewModel.$selectedLocation) { location in
+            guard let location = location else { return }
+            withAnimation {
+                position = .region(MKCoordinateRegion(
+                    center: location,
+                    span: MKCoordinateSpan(latitudeDelta: 0.05, longitudeDelta: 0.05)
+                ))
             }
         }
         .onChange(of: selectedIndex) { _, newIndex in

@@ -74,7 +74,7 @@ class CoffeeHunterDataManager: ObservableObject {
         let nearbyShops = shops.filter { shop in
             let shopLocation = CLLocation(latitude: shop.latitude, longitude: shop.longitude)
             let distance = userLocation.distance(from: shopLocation) / 1000
-            return distance <= 10
+            return distance <= 50
         }
         
         return nearbyShops.randomElement()
