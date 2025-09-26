@@ -38,7 +38,7 @@ struct LocationPickerView: View {
                     MapUserLocationButton()
                     MapCompass()
                 }
-                .onTapGesture { location in
+                .onTapGesture { _ in
                     selectedLocation = position.region?.center
                 }
                 

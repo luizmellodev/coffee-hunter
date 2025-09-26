@@ -191,7 +191,6 @@ class CoffeeHunterViewModel: ObservableObject {
     func getShopIndex(_ shop: CoffeeShop) -> Int {
         sortedCoffeeShopsByDistance.firstIndex(of: shop) ?? 0
     }
-
     
     // MARK: - Private
     private func updateLocationName(for location: CLLocationCoordinate2D) {

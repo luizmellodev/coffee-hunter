@@ -15,7 +15,7 @@ struct OnboardingView: View {
         TabView(selection: $currentPage) {
             OnboardingPage(
                 title: "Welcome to\nCoffee Hunter",
-                description: "Your journey to discover amazing coffee spots begins here. Get ready for a delightful adventure!",
+                description: "Your journey to discover amazing cafés begins. Get ready for a delightful adventure!",
                 imageName: "cup.and.saucer.fill",
                 customIcon: {
                     ZStack {
@@ -50,7 +50,7 @@ struct OnboardingView: View {
             
             OnboardingPage(
                 title: "Discover & Track",
-                description: "Find the best coffee spots around you, save your favorites, and keep track of your coffee adventures.",
+                description: "Find the best coffee spots around and keep track of your coffee adventures.",
                 imageName: "map.fill",
                 customIcon: {
                     ZStack {
@@ -92,7 +92,7 @@ struct OnboardingView: View {
             
             OnboardingPage(
                 title: "Earn Achievements",
-                description: "Become a true Coffee Hunter! Collect badges, track your progress, and unlock special rewards.",
+                description: "Become a true Coffee Hunter! Collect badges and unlock special rewards.",
                 imageName: "trophy.fill",
                 isLast: true,
                 hasSeenOnboarding: $hasSeenOnboarding,
