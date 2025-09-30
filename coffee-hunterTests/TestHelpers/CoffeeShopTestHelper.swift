@@ -19,7 +19,14 @@ extension CoffeeShop {
             distance: distance,
             address: address,
             coordinates: CLLocationCoordinate2D(latitude: latitude, longitude: longitude),
-            mapItem: MKMapItem(placemark: MKPlacemark(coordinate: CLLocationCoordinate2D(latitude: latitude, longitude: longitude)))
+            mapItem: MKMapItem(
+                placemark: MKPlacemark(
+                    coordinate: CLLocationCoordinate2D(
+                        latitude: latitude,
+                        longitude: longitude
+                    )
+                )
+            )
         )
     }
 }

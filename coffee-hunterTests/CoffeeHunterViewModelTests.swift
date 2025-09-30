@@ -153,8 +153,8 @@ final class CoffeeHunterViewModelTests: XCTestCase {
         viewModel.addVisit(shop5)
         
         // When - Add favorites to unlock Coffee Enthusiast
-        for i in 1...10 {
-            viewModel.toggleFavorite(CoffeeShop.mock(name: "Favorite \(i)"))
+        for indice in 1...10 {
+            viewModel.toggleFavorite(CoffeeShop.mock(name: "Favorite \(indice)"))
         }
         
         // When - Add multiple visits to same shop to unlock Regular Customer

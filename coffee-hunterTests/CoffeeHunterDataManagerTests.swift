@@ -4,18 +4,22 @@ import MapKit
 @testable import coffee_hunter
 
 final class CoffeeHunterDataManagerTests: XCTestCase {
-    var sut: CoffeeHunterDataManager!
+    var sut = CoffeeHunterDataManager()
     let userDefaults = UserDefaults.standard
+    
+    private var bundleIdentifier: String {
+        Bundle.main.bundleIdentifier ?? "coffee_hunter_tests"
+    }
     
     override func setUp() {
         super.setUp()
-        userDefaults.removePersistentDomain(forName: Bundle.main.bundleIdentifier!)
+        userDefaults.removePersistentDomain(forName: bundleIdentifier)
         sut = CoffeeHunterDataManager()
     }
     
     override func tearDown() {
-        sut = nil
-        userDefaults.removePersistentDomain(forName: Bundle.main.bundleIdentifier!)
+        sut = CoffeeHunterDataManager()
+        userDefaults.removePersistentDomain(forName: bundleIdentifier)
         super.tearDown()
     }
     
@@ -123,6 +127,6 @@ final class CoffeeHunterDataManagerTests: XCTestCase {
         
         // Then
         XCTAssertEqual(route.count, 3)
-        XCTAssertTrue(Set(route.map { $0.name }).count == route.count) // All shops are unique
+        XCTAssertTrue(Set(route.map { $0.name }).count == route.count)
     }
 }

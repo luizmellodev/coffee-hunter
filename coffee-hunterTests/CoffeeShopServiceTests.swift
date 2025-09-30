@@ -5,15 +5,18 @@ import Combine
 @testable import coffee_hunter
 
 final class CoffeeShopServiceTests: XCTestCase {
-    var sut: CoffeeShopService!
+    var sut = CoffeeShopService()
+    var cancellables = Set<AnyCancellable>()
     
     override func setUp() {
         super.setUp()
         sut = CoffeeShopService()
+        cancellables = []
     }
     
     override func tearDown() {
-        sut = nil
+        cancellables.forEach { $0.cancel() }
+        cancellables.removeAll()
         super.tearDown()
     }
     
@@ -74,15 +77,16 @@ final class CoffeeShopServiceTests: XCTestCase {
         // When
         sut.fetchNearbyCoffeeShops(near: location)
         
-        var cancellable = sut.$coffeeShops.sink { shops in
-            if !shops.isEmpty {
-                // Then
-                XCTAssertTrue(shops.allSatisfy { $0.distance <= 150 })
-                expectation.fulfill()
+        sut.$coffeeShops
+            .sink { shops in
+                if !shops.isEmpty {
+                    // Then
+                    XCTAssertTrue(shops.allSatisfy { $0.distance <= 150 })
+                    expectation.fulfill()
+                }
             }
-        }
+            .store(in: &cancellables)
         
         waitForExpectations(timeout: 5)
-        cancellable.cancel()
     }
 }
