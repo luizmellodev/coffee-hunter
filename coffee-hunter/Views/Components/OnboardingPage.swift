@@ -42,84 +42,48 @@ struct OnboardingPage: View {
     }
     
     var body: some View {
-        GeometryReader { geometry in
-            VStack(spacing: 0) {
-                // Top Wave
-                Path { path in
-                    path.move(to: CGPoint(x: 0, y: 100))
-                    path.addCurve(
-                        to: CGPoint(x: geometry.size.width, y: 50),
-                        control1: CGPoint(x: geometry.size.width * 0.3, y: 150),
-                        control2: CGPoint(x: geometry.size.width * 0.7, y: 0)
-                    )
-                    path.addLine(to: CGPoint(x: geometry.size.width, y: 0))
-                    path.addLine(to: CGPoint(x: 0, y: 0))
-                }
-                .fill(
-                    LinearGradient(
-                        colors: [Color.brown.opacity(0.2), Color.brown.opacity(0.1)],
-                        startPoint: .topLeading,
-                        endPoint: .bottomTrailing
-                    )
-                )
+        VStack(spacing: 40) {
+            Spacer()
+            
+            icon
+                .scaleEffect(showContent ? 1 : 0.8)
+                .opacity(showContent ? 1 : 0)
+            
+            VStack(spacing: 16) {
+                Text(title)
+                    .font(.system(size: 28, weight: .bold, design: .rounded))
+                    .multilineTextAlignment(.center)
+                    .foregroundColor(.primary.opacity(0.9))
+                    .offset(y: showContent ? 0 : 10)
+                    .opacity(showContent ? 1 : 0)
+                    .accessibility(identifier: title)
                 
-                Spacer()
-                
-                // Content
-                VStack(spacing: 30) {
-                    icon
-                        .scaleEffect(showContent ? 1 : 0.5)
-                        .opacity(showContent ? 1 : 0)
-                    
-                    VStack(spacing: 16) {
-                        Text(title)
-                            .font(.system(size: 32, weight: .bold, design: .rounded))
-                            .multilineTextAlignment(.center)
-                            .offset(y: showContent ? 0 : 20)
-                            .opacity(showContent ? 1 : 0)
-                        
-                        Text(description)
-                            .font(.system(size: 17, weight: .regular, design: .rounded))
-                            .multilineTextAlignment(.center)
-                            .foregroundColor(.secondary)
-                            .padding(.horizontal, 24)
-                            .offset(y: showContent ? 0 : 15)
-                            .opacity(showContent ? 1 : 0)
-                    }
-                    
-                    if isLast {
-                        startButton
-                            .offset(y: showContent ? 0 : 30)
-                            .opacity(showContent ? 1 : 0)
-                    }
-                }
-                .padding(.bottom, 100)
-                
-                Spacer()
-                
-                // Bottom Wave
-                Path { path in
-                    path.move(to: CGPoint(x: 0, y: geometry.size.height - 100))
-                    path.addCurve(
-                        to: CGPoint(x: geometry.size.width, y: geometry.size.height - 50),
-                        control1: CGPoint(x: geometry.size.width * 0.3, y: geometry.size.height - 150),
-                        control2: CGPoint(x: geometry.size.width * 0.7, y: geometry.size.height)
-                    )
-                    path.addLine(to: CGPoint(x: geometry.size.width, y: geometry.size.height))
-                    path.addLine(to: CGPoint(x: 0, y: geometry.size.height))
-                }
-                .fill(
-                    LinearGradient(
-                        colors: [Color.brown.opacity(0.1), Color.brown.opacity(0.2)],
-                        startPoint: .topLeading,
-                        endPoint: .bottomTrailing
-                    )
-                )
+                Text(description)
+                    .font(.system(size: 16, weight: .regular, design: .rounded))
+                    .multilineTextAlignment(.center)
+                    .foregroundColor(.secondary)
+                    .padding(.horizontal, 32)
+                    .offset(y: showContent ? 0 : 10)
+                    .opacity(showContent ? 1 : 0)
+                    .accessibilityIdentifier("\(title)Description")
             }
-            .ignoresSafeArea()
+            
+            Spacer()
+            
+            if isLast {
+                startButton
+                    .offset(y: showContent ? 0 : 20)
+                    .opacity(showContent ? 1 : 0)
+            }
         }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .background(
+            Color.brown
+                .opacity(0.05)
+                .ignoresSafeArea()
+        )
         .onAppear {
-            withAnimation(.spring(response: 0.6, dampingFraction: 0.8)) {
+            withAnimation(.easeOut(duration: 0.4)) {
                 showContent = true
             }
         }
@@ -127,26 +91,28 @@ struct OnboardingPage: View {
     
     private var startButton: some View {
         Button(action: {
-            withAnimation {
+            withAnimation(.easeInOut(duration: 0.3)) {
                 hasSeenOnboarding?.wrappedValue = true
             }
         }) {
-            Text("Start Hunting")
+            Text("Get Started")
                 .font(.system(.headline, design: .rounded))
                 .foregroundColor(.white)
-                .frame(height: 56)
+                .frame(height: 50)
                 .frame(maxWidth: .infinity)
                 .background(
                     LinearGradient(
-                        colors: [.brown, .brown.opacity(0.8)],
-                        startPoint: .topLeading,
-                        endPoint: .bottomTrailing
+                        colors: [.brown, .brown.opacity(0.9)],
+                        startPoint: .top,
+                        endPoint: .bottom
                     )
                 )
-                .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
-                .shadow(color: .brown.opacity(0.3), radius: 20, x: 0, y: 10)
+                .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
+                .shadow(color: .brown.opacity(0.15), radius: 10, x: 0, y: 5)
+                .accessibility(identifier: "getStartedButton")
         }
-        .padding(.horizontal, 40)
-        .padding(.top, 20)
+        .padding(.horizontal, 32)
+        .padding(.bottom, 50)
+        .accessibilityIdentifier("getStartedButton")
     }
 }

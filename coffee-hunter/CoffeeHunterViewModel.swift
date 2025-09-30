@@ -24,8 +24,8 @@ class CoffeeHunterViewModel: ObservableObject {
     @Published var selectedTab = 0
     
     // MARK: - Dependencies
-    private let dataManager: CoffeeHunterDataManager
-    private let coffeeShopService: CoffeeShopService
+    private let dataManager: CoffeeHunterDataManaging
+    private let coffeeShopService: CoffeeShopServicing
     let locationManager = LocationManager()
     
     // MARK: - Private
@@ -41,8 +41,8 @@ class CoffeeHunterViewModel: ObservableObject {
     
     // MARK: - Init
     init(
-        dataManager: CoffeeHunterDataManager = CoffeeHunterDataManager(),
-        coffeeShopService: CoffeeShopService = CoffeeShopService()
+        dataManager: CoffeeHunterDataManaging = CoffeeHunterDataManager(),
+        coffeeShopService: CoffeeShopServicing = CoffeeShopService()
     ) {
         self.dataManager = dataManager
         self.coffeeShopService = coffeeShopService

@@ -8,7 +8,7 @@
 import Foundation
 import CoreLocation
 
-class CoffeeHunterDataManager {
+class CoffeeHunterDataManager: CoffeeHunterDataManaging {
     private(set) var favorites: [CoffeeShop] = []
     private(set) var visitHistory: [CoffeeShopVisit] = []
     private(set) var isPremium: Bool = false
