@@ -9,7 +9,7 @@ on:
 jobs:
   lint:
     name: SwiftLint
-    runs-on: macos-14
+    runs-on: macos-15
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -23,15 +23,15 @@ jobs:
   test:
     name: Build & Test
     needs: lint
-    runs-on: macos-14
-    timeout-minutes: 35
+    runs-on: macos-15
+    timeout-minutes: 30
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
       - name: Select Xcode version
-        run: sudo xcode-select -s /Applications/Xcode_15.4.app
+        run: sudo xcode-select -s /Applications/Xcode_16.1.app
 
       - name: Show Xcode version
         run: xcodebuild -version
@@ -51,13 +51,13 @@ jobs:
         run: gem install xcpretty
 
       - name: Build and Test
-        timeout-minutes: 25
+        timeout-minutes: 20
         run: |
           set -o pipefail
           xcodebuild clean test \
             -project coffee-hunter.xcodeproj \
             -scheme "coffee-hunter" \
-            -destination "platform=iOS Simulator,name=iPhone 15 Pro,OS=17.5" \
+            -destination "platform=iOS Simulator,name=iPhone 15 Pro" \
             -enableCodeCoverage YES \
             -derivedDataPath DerivedData \
             -resultBundlePath TestResults.xcresult \
@@ -105,12 +105,14 @@ jobs:
         if: failure()
         run: |
           echo "❌ Tests failed. Check the artifacts for details."
-          cat xcodebuild.log | grep -A 10 "FAILED"
+          if [ -f xcodebuild.log ]; then
+            cat xcodebuild.log | grep -A 10 "FAILED" || true
+          fi
 
   build:
     name: Build for Release
     needs: test
-    runs-on: macos-14
+    runs-on: macos-15
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
 
     steps:
@@ -118,7 +120,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Select Xcode version
-        run: sudo xcode-select -s /Applications/Xcode_15.4.app
+        run: sudo xcode-select -s /Applications/Xcode_16.1.app
 
       - name: Build for Release
         run: |
