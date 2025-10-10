@@ -106,3 +106,15 @@ make ci
 2. Fix any SwiftLint warnings/errors
 3. Add tests for new features
 4. Update documentation as needed
+
+ LandingGen:start
+{
+  "template": "minimal-elegant",
+  "customTitle": "coffee-hunter",
+  "customDescription": "Café original!",
+  "customIcon": null,
+  "customScreenshots": []
+}
+LandingGen:end 
+
+[🚀 Ver site através do LandingGen](https://preview-landing-page-generator-kzmqkd14r3bvg71m6amr.vusercontent.net/coffee-hunter)
