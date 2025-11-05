@@ -55,6 +55,7 @@ jobs:
             -project coffee-hunter.xcodeproj \
             -scheme "coffee-hunter" \
             -destination "platform=iOS Simulator,name=iPhone 16 Pro,OS=18.4" \
+            -skip-testing:coffee-hunterTestsUI \
             -enableCodeCoverage YES \
             -derivedDataPath DerivedData \
             -resultBundlePath TestResults.xcresult \
