@@ -57,7 +57,7 @@ jobs:
           xcodebuild clean test \
             -project coffee-hunter.xcodeproj \
             -scheme "coffee-hunter" \
-            -destination "platform=iOS Simulator,name=iPhone 15 Pro" \
+            -destination "platform=iOS Simulator,name=iPhone 14 Pro,OS=16.0" \
             -enableCodeCoverage YES \
             -derivedDataPath DerivedData \
             -resultBundlePath TestResults.xcresult \
