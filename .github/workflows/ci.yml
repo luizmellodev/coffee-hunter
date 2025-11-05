@@ -48,64 +48,25 @@ jobs:
         run: gem install xcpretty
 
       - name: Build and Test
-        timeout-minutes: 20
         run: |
           set -o pipefail
-          xcodebuild clean test \
+          xcodebuild test \
             -project coffee-hunter.xcodeproj \
             -scheme "coffee-hunter" \
             -destination "platform=iOS Simulator,arch=arm64,name=iPhone 16 Pro,OS=18.4" \
             -skip-testing:coffee-hunterTestsUI \
-            -enableCodeCoverage YES \
             -derivedDataPath DerivedData \
-            -resultBundlePath TestResults.xcresult \
-            ONLY_ACTIVE_ARCH=YES \
             CODE_SIGN_IDENTITY="" \
             CODE_SIGNING_REQUIRED=NO \
-            | tee xcodebuild.log \
             | xcpretty --test --color
-
-      - name: Generate Code Coverage Report
-        if: success()
-        run: |
-          xcrun llvm-cov export \
-            -format="lcov" \
-            -instr-profile DerivedData/Build/ProfileData/*/Coverage.profdata \
-            DerivedData/Build/Products/Debug-iphonesimulator/coffee-hunter.app/coffee-hunter \
-            > coverage.lcov
-
-      - name: Upload Coverage to Codecov
-        if: success()
-        uses: codecov/codecov-action@v4
-        with:
-          files: ./coverage.lcov
-          fail_ci_if_error: false
 
       - name: Upload Test Results
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: test-results
-          path: |
-            TestResults.xcresult
-            xcodebuild.log
+          path: DerivedData/Logs/Test/*.xcresult
           retention-days: 7
-
-      - name: Upload Coverage Report
-        if: success()
-        uses: actions/upload-artifact@v4
-        with:
-          name: coverage-report
-          path: coverage.lcov
-          retention-days: 7
-
-      - name: Check Test Results
-        if: failure()
-        run: |
-          echo "❌ Tests failed. Check the artifacts for details."
-          if [ -f xcodebuild.log ]; then
-            cat xcodebuild.log | grep -A 10 "FAILED" || true
-          fi
 
   build:
     name: Build for Release
