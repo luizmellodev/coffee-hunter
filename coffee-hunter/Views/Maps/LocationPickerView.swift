@@ -19,7 +19,8 @@ struct LocationPickerView: View {
     
     init(viewModel: CoffeeHunterViewModel) {
         self.viewModel = viewModel
-        let initialLocation = viewModel.selectedLocation ?? CLLocationCoordinate2D(latitude: -23.5505, longitude: -46.6333) // São Paulo as default
+        let initialLocation = viewModel.selectedLocation
+        ?? CLLocationCoordinate2D(latitude: -23.5505, longitude: -46.6333)
         self._position = State(initialValue: .region(MKCoordinateRegion(
             center: initialLocation,
             span: MKCoordinateSpan(latitudeDelta: 0.05, longitudeDelta: 0.05)
@@ -38,7 +39,7 @@ struct LocationPickerView: View {
                     MapUserLocationButton()
                     MapCompass()
                 }
-                .onTapGesture { location in
+                .onTapGesture { _ in
                     selectedLocation = position.region?.center
                 }
                 

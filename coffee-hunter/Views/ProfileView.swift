@@ -12,26 +12,7 @@ struct ProfileView: View {
     @State private var showingLocationPicker = false
     
     private var achievements: [Achievement] {
-        [
-            Achievement(
-                title: "Coffee Explorer",
-                description: "Visit 5 different coffee shops",
-                icon: "map.fill",
-                isUnlocked: viewModel.dataManager.visitHistory.count >= 5
-            ),
-            Achievement(
-                title: "Coffee Enthusiast",
-                description: "Add 10 coffee shops to favorites",
-                icon: "heart.fill",
-                isUnlocked: viewModel.dataManager.favorites.count >= 10
-            ),
-            Achievement(
-                title: "Regular Customer",
-                description: "Visit the same coffee shop 3 times",
-                icon: "star.fill",
-                isUnlocked: checkRegularCustomer()
-            )
-        ]
+        viewModel.getAchievements()
     }
     
     var body: some View {
@@ -92,11 +73,11 @@ struct ProfileView: View {
             
             HStack(spacing: 30) {
                 statItem(
-                    count: viewModel.dataManager.visitHistory.count,
+                    count: viewModel.visitHistory.count,
                     title: "Visits",
                     icon: "checkmark.circle.fill"
                 )
-                statItem(count: viewModel.dataManager.favorites.count, title: "Favorites", icon: "heart.fill")
+                statItem(count: viewModel.favorites.count, title: "Favorites", icon: "heart.fill")
                 statItem(count: calculateUniquePlaces(), title: "Places", icon: "map.fill")
             }
         }
@@ -170,20 +151,39 @@ struct ProfileView: View {
                     ActionButton(title: "Visit History", icon: "clock.fill", color: .brown)
                 }
                 
+            VStack(spacing: 8) {
                 Button(action: { showingLocationPicker = true }) {
-                    ActionButton(title: "Change Location", icon: "location.fill", color: .blue)
+                    ActionButton(
+                        title: viewModel.isLocationThrottled ? 
+                            "Please wait \(viewModel.throttleTimeRemaining)s" : 
+                            "Change Location",
+                        icon: "location.fill",
+                        color: viewModel.isLocationThrottled ? .gray : .blue
+                    )
                 }
+                .disabled(viewModel.isLocationThrottled)
+                
+                if viewModel.selectedLocation != nil {
+                    Button(action: { viewModel.clearCustomLocation() }) {
+                        Text("Reset to Current Location")
+                            .font(.footnote)
+                            .foregroundColor(.secondary)
+                    }
+                    .disabled(viewModel.isLocationThrottled)
+                }
+                
+                if viewModel.isLocationThrottled {
+                    Text("Too many location searches. Please wait.")
+                        .font(.caption)
+                        .foregroundColor(.secondary)
+                        .multilineTextAlignment(.center)
+                }
+            }
             }
         }
     }
     
     private func calculateUniquePlaces() -> Int {
-        Set(viewModel.dataManager.visitHistory.map { $0.shopName }).count
-    }
-    
-    private func checkRegularCustomer() -> Bool {
-        let visits = viewModel.dataManager.visitHistory
-        let shopVisits = Dictionary(grouping: visits, by: { $0.shopName })
-        return shopVisits.values.contains(where: { $0.count >= 3 })
+        viewModel.getUniqueVisitedPlaces()
     }
 }

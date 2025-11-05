@@ -3,33 +3,88 @@ name: CI
 on:
   pull_request:
     branches: [main]
+  push:
+    branches: [main]
 
 jobs:
   lint:
     name: SwiftLint
-    runs-on: macos-latest
+    runs-on: macos-15
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
+
       - name: Install SwiftLint
         run: brew install swiftlint
+
       - name: Run SwiftLint
         run: swiftlint --strict
 
   test:
-    name: Test
+    name: Build & Test
     needs: lint
-    runs-on: macos-latest
-    steps:
-      - uses: actions/checkout@v4
+    runs-on: macos-15
+    timeout-minutes: 30
 
-      - name: Select Xcode
-        run: sudo xcode-select -s /Applications/Xcode.app
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Show Xcode version
+        run: xcodebuild -version
+
+      - name: List available simulators
+        run: xcrun simctl list devices available
+
+      - name: Cache DerivedData
+        uses: actions/cache@v4
+        with:
+          path: DerivedData
+          key: ${{ runner.os }}-deriveddata-${{ hashFiles('**/*.swift') }}
+          restore-keys: |
+            ${{ runner.os }}-deriveddata-
+
+      - name: Install xcpretty
+        run: gem install xcpretty
 
       - name: Build and Test
         run: |
-          xcodebuild clean test \
+          set -o pipefail
+          xcodebuild test \
             -project coffee-hunter.xcodeproj \
             -scheme "coffee-hunter" \
-            -destination "platform=iOS Simulator,name=iPhone 17 Pro,OS=26.0" \
-            -enableCodeCoverage YES \
-            ONLY_ACTIVE_ARCH=YES
+            -destination "platform=iOS Simulator,arch=arm64,name=iPhone 16 Pro,OS=18.4" \
+            -skip-testing:coffee-hunterTestsUI \
+            -derivedDataPath DerivedData \
+            CODE_SIGN_IDENTITY="" \
+            CODE_SIGNING_REQUIRED=NO \
+            | xcpretty --test --color
+
+      - name: Upload Test Results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results
+          path: DerivedData/Logs/Test/*.xcresult
+          retention-days: 7
+
+  build:
+    name: Build for Release
+    needs: test
+    runs-on: macos-15
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Build for Release
+        run: |
+          xcodebuild clean build \
+            -project coffee-hunter.xcodeproj \
+            -scheme "coffee-hunter" \
+            -configuration Release \
+            -destination "generic/platform=iOS" \
+            CODE_SIGN_IDENTITY="" \
+            CODE_SIGNING_REQUIRED=NO \
+            ONLY_ACTIVE_ARCH=NO

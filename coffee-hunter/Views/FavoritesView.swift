@@ -14,11 +14,11 @@ struct FavoritesView: View {
     var body: some View {
         NavigationStack {
             ScrollView {
-                if viewModel.dataManager.favorites.isEmpty {
+                if viewModel.favorites.isEmpty {
                     emptyStateView
                 } else {
                     LazyVGrid(columns: [GridItem(.flexible())], spacing: 16) {
-                        ForEach(viewModel.dataManager.favorites) { shop in
+                        ForEach(viewModel.favorites) { shop in
                             FavoriteCard(shop: shop, viewModel: viewModel)
                                 .onTapGesture {
                                     selectedShop = shop

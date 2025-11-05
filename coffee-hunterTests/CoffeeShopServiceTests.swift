@@ -1,64 +1,92 @@
 import XCTest
-import CoreLocation
 import MapKit
+import CoreLocation
+import Combine
 @testable import coffee_hunter
 
 final class CoffeeShopServiceTests: XCTestCase {
-    var sut: CoffeeShopService?
+    var sut = CoffeeShopService()
+    var cancellables = Set<AnyCancellable>()
     
     override func setUp() {
         super.setUp()
         sut = CoffeeShopService()
+        cancellables = []
     }
     
     override func tearDown() {
-        sut = nil
+        cancellables.forEach { $0.cancel() }
+        cancellables.removeAll()
         super.tearDown()
-    }
-    
-    func testFetchNearbyCoffeeShops() {
-        // Given
-        let location = CLLocationCoordinate2D(latitude: 42.0, longitude: -71.0)
-        let expectation = XCTestExpectation(description: "Fetch coffee shops")
-        
-        guard let sut = sut else {
-            XCTFail("Service not initialized")
-            return
-        }
-        
-        // When
-        sut.fetchNearbyCoffeeShops(near: location)
-        
-        // Then
-        // Note: Since MKLocalSearch makes actual network calls, we can only test that our published array gets updated
-        // In a real app, we would mock the MKLocalSearch for proper unit testing
-        DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
-            XCTAssertNotNil(self.sut?.coffeeShops, "Coffee shops should not be nil")
-            expectation.fulfill()
-        }
-        
-        wait(for: [expectation], timeout: 3.0)
     }
     
     func testFormatAddress() {
         // Given
         let placemark = MKPlacemark(
-            coordinate: CLLocationCoordinate2D(latitude: 42.0, longitude: -71.0),
+            coordinate: CLLocationCoordinate2D(latitude: 0, longitude: 0),
             addressDictionary: [
-                "Street": "Main St",
+                "Street": "Test Street",
                 "SubThoroughfare": "123"
             ]
         )
         
-        guard let sut = sut else {
-            XCTFail("Service not initialized")
-            return
-        }
-        
         // When
-        let address = sut.formatAddress(placemark)
+        let formattedAddress = sut.formatAddress(placemark)
         
         // Then
-        XCTAssertFalse(address.isEmpty, "Formatted address should not be empty")
+        XCTAssertEqual(formattedAddress, "123 Test Street")
+    }
+    
+    func testFormatAddressWithMissingNumber() {
+        // Given
+        let placemark = MKPlacemark(
+            coordinate: CLLocationCoordinate2D(latitude: 0, longitude: 0),
+            addressDictionary: [
+                "Street": "Test Street"
+            ]
+        )
+        
+        // When
+        let formattedAddress = sut.formatAddress(placemark)
+        
+        // Then
+        XCTAssertEqual(formattedAddress, "Test Street")
+    }
+    
+    func testFormatAddressWithMissingStreet() {
+        // Given
+        let placemark = MKPlacemark(
+            coordinate: CLLocationCoordinate2D(latitude: 0, longitude: 0),
+            addressDictionary: [
+                "SubThoroughfare": "123"
+            ]
+        )
+        
+        // When
+        let formattedAddress = sut.formatAddress(placemark)
+        
+        // Then
+        XCTAssertEqual(formattedAddress, "123")
+    }
+    
+    func testFetchNearbyCoffeeShops() {
+        // Given
+        let expectation = expectation(description: "Fetch coffee shops")
+        let location = CLLocationCoordinate2D(latitude: 37.7749, longitude: -122.4194)
+        
+        // When
+        sut.fetchNearbyCoffeeShops(near: location)
+        
+        sut.$coffeeShops
+            .sink { shops in
+                if !shops.isEmpty {
+                    // Then
+                    XCTAssertTrue(shops.allSatisfy { $0.distance <= 150 })
+                    expectation.fulfill()
+                }
+            }
+            .store(in: &cancellables)
+        
+        waitForExpectations(timeout: 5)
     }
 }

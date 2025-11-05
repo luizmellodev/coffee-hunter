@@ -9,7 +9,7 @@ import SwiftUI
 import MapKit
 import CoreLocation
 
-class CoffeeShopService: ObservableObject {
+class CoffeeShopService: ObservableObject, CoffeeShopServicing {
     @Published var coffeeShops: [CoffeeShop] = []
     
     func fetchNearbyCoffeeShops(near location: CLLocationCoordinate2D) {

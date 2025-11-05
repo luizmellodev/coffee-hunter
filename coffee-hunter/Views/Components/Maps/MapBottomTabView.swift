@@ -13,24 +13,17 @@ struct MapBottomTabView: View {
     
     var body: some View {
         TabView(selection: $selectedIndex) {
-            ForEach(viewModel.coffeeShopService.coffeeShops
-                .sorted { $0.distance < $1.distance }
-            ) { shop in
+            ForEach(viewModel.sortedCoffeeShopsByDistance) { shop in
                 ShopBottomCard(shop: shop)
-                    .tag(
-                        viewModel.coffeeShopService.coffeeShops
-                            .sorted { $0.distance < $1.distance }
-                            .firstIndex(of: shop) ?? 0
-                    )
+                    .tag(viewModel.getShopIndex(shop))
             }
         }
         .frame(height: 180)
         .tabViewStyle(.page(indexDisplayMode: .never))
         .onChange(of: selectedIndex) { _, newIndex in
-            let sortedShops = viewModel.coffeeShopService.coffeeShops.sorted { $0.distance < $1.distance }
+            let sortedShops = viewModel.sortedCoffeeShopsByDistance
             if newIndex < sortedShops.count {
-                let shop = sortedShops[newIndex]
-                viewModel.selectedCoffeeShop = shop
+                viewModel.selectedCoffeeShop = sortedShops[newIndex]
             }
         }
     }

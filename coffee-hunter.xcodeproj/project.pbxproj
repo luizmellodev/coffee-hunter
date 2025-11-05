@@ -35,11 +35,6 @@
 			path = "coffee-hunterTests";
 			sourceTree = "<group>";
 		};
-		7909E13C2E81C66F0057A0F6 /* coffee-hunterTestsUI */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			path = "coffee-hunterTestsUI";
-			sourceTree = "<group>";
-		};
 		79C7022D2D919BC8005C26A7 /* coffee-hunter */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			path = "coffee-hunter";
@@ -77,7 +72,6 @@
 			children = (
 				79C7022D2D919BC8005C26A7 /* coffee-hunter */,
 				7909E1292E81C6540057A0F6 /* coffee-hunterTests */,
-				7909E13C2E81C66F0057A0F6 /* coffee-hunterTestsUI */,
 				79C7022C2D919BC8005C26A7 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -130,9 +124,6 @@
 			);
 			dependencies = (
 				7909E1422E81C66F0057A0F6 /* PBXTargetDependency */,
-			);
-			fileSystemSynchronizedGroups = (
-				7909E13C2E81C66F0057A0F6 /* coffee-hunterTestsUI */,
 			);
 			name = "coffee-hunterTestsUI";
 			packageProductDependencies = (
