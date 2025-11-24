@@ -316,13 +316,41 @@ struct TourStopDetailView: View {
             .clipShape(RoundedRectangle(cornerRadius: 12))
             .allowsHitTesting(false)
             
-            // Address (if you want to add it to TourStop model)
-            HStack {
-                Image(systemName: "mappin.circle.fill")
-                    .foregroundColor(.red)
-                Text("Tap 'Open in Apple Maps' for full address")
-                    .font(.caption)
-                    .foregroundColor(.secondary)
+            // Map action buttons
+            HStack(spacing: 8) {
+                // Apple Maps button
+                Button {
+                    openInMaps()
+                } label: {
+                    HStack {
+                        Image(systemName: "arrow.triangle.turn.up.right.diamond.fill")
+                        Text("Apple Maps")
+                            .font(.subheadline)
+                            .fontWeight(.medium)
+                    }
+                    .foregroundColor(.white)
+                    .frame(maxWidth: .infinity)
+                    .padding(.vertical, 10)
+                    .background(Color.brown)
+                    .clipShape(RoundedRectangle(cornerRadius: 8))
+                }
+                
+                // Google Maps button
+                Button {
+                    openInGoogleMaps()
+                } label: {
+                    HStack {
+                        Image(systemName: "magnifyingglass.circle.fill")
+                        Text("Details")
+                            .font(.subheadline)
+                            .fontWeight(.medium)
+                    }
+                    .foregroundColor(.brown)
+                    .frame(maxWidth: .infinity)
+                    .padding(.vertical, 10)
+                    .background(Color.brown.opacity(0.1))
+                    .clipShape(RoundedRectangle(cornerRadius: 8))
+                }
             }
         }
     }
@@ -339,6 +367,22 @@ struct TourStopDetailView: View {
         let mapItem = MKMapItem(placemark: placemark)
         mapItem.name = stop.shopName
         mapItem.openInMaps(launchOptions: [MKLaunchOptionsDirectionsModeKey: MKLaunchOptionsDirectionsModeWalking])
+    }
+    
+    private func openInGoogleMaps() {
+        // Encode the search query (name for better results)
+        let searchQuery = stop.shopName
+        let encodedQuery = searchQuery.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? ""
+        
+        // Try to open in Google Maps app first
+        if let googleMapsURL = URL(string: "comgooglemaps://?q=\(encodedQuery)&center=\(stop.coordinates.latitude),\(stop.coordinates.longitude)"),
+           UIApplication.shared.canOpenURL(googleMapsURL) {
+            UIApplication.shared.open(googleMapsURL)
+        } 
+        // Fallback to Google Maps web version (always works)
+        else if let webURL = URL(string: "https://www.google.com/maps/search/?api=1&query=\(encodedQuery)") {
+            UIApplication.shared.open(webURL)
+        }
     }
     
     private func searchOnGoogle() {

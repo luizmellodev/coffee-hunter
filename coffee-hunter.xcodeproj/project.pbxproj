@@ -29,6 +29,16 @@
 		79C7022B2D919BC8005C26A7 /* coffee-hunter.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "coffee-hunter.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		7909CEB72ED3E52400849FE5 /* Exceptions for "coffee-hunter" folder in "coffee-hunter" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = 79C7022A2D919BC8005C26A7 /* coffee-hunter */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		7909E1292E81C6540057A0F6 /* coffee-hunterTests */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
@@ -37,6 +47,9 @@
 		};
 		79C7022D2D919BC8005C26A7 /* coffee-hunter */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				7909CEB72ED3E52400849FE5 /* Exceptions for "coffee-hunter" folder in "coffee-hunter" target */,
+			);
 			path = "coffee-hunter";
 			sourceTree = "<group>";
 		};
@@ -476,6 +489,7 @@
 				DEVELOPMENT_TEAM = W795AQWUXY;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "coffee-hunter/Info.plist";
 				INFOPLIST_KEY_NSLocationAlwaysAndWhenInUseUsageDescription = "Coffee Hunter uses your location to find the best coffee shops in your area";
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "Coffee Hunter needs your location to find coffee shops near you";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
@@ -512,6 +526,7 @@
 				DEVELOPMENT_TEAM = W795AQWUXY;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "coffee-hunter/Info.plist";
 				INFOPLIST_KEY_NSLocationAlwaysAndWhenInUseUsageDescription = "Coffee Hunter uses your location to find the best coffee shops in your area";
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "Coffee Hunter needs your location to find coffee shops near you";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;

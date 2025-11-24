@@ -190,8 +190,8 @@ struct CoffeeShopDetailView: View {
     
     private var infoCardsSection: some View {
         VStack(alignment: .leading, spacing: 16) {
-            // Address
-            infoCard(icon: "map", title: "Address", content: shop.address)
+            // Address with Open button
+            addressCard
             
             // Phone
             if let phone = shop.phoneNumber {
@@ -209,6 +209,57 @@ struct CoffeeShopDetailView: View {
         }
         .opacity(showContent ? 1 : 0)
         .offset(y: showContent ? 0 : 20)
+    }
+    
+    private var addressCard: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            Label("Location", systemImage: "map")
+                .font(.subheadline)
+                .foregroundColor(.secondary)
+            
+            Text(shop.address)
+                .font(.body)
+            
+            HStack(spacing: 8) {
+                // Apple Maps button
+                Button {
+                    shop.mapItem.openInMaps()
+                } label: {
+                    HStack {
+                        Image(systemName: "arrow.triangle.turn.up.right.diamond.fill")
+                        Text("Apple Maps")
+                            .font(.subheadline)
+                            .fontWeight(.medium)
+                    }
+                    .foregroundColor(.white)
+                    .frame(maxWidth: .infinity)
+                    .padding(.vertical, 10)
+                    .background(Color.brown)
+                    .clipShape(RoundedRectangle(cornerRadius: 8))
+                }
+                
+                // Google Maps button
+                Button {
+                    openInGoogleMaps()
+                } label: {
+                    HStack {
+                        Image(systemName: "magnifyingglass.circle.fill")
+                        Text("Details")
+                            .font(.subheadline)
+                            .fontWeight(.medium)
+                    }
+                    .foregroundColor(.brown)
+                    .frame(maxWidth: .infinity)
+                    .padding(.vertical, 10)
+                    .background(Color.brown.opacity(0.1))
+                    .clipShape(RoundedRectangle(cornerRadius: 8))
+                }
+            }
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding()
+        .background(Color(.secondarySystemBackground))
+        .clipShape(RoundedRectangle(cornerRadius: 12))
     }
     
     private func infoCard(icon: String, title: String, content: String) -> some View {
@@ -315,6 +366,22 @@ struct CoffeeShopDetailView: View {
     
     private var visitCount: Int {
         viewModel.getVisitCount(for: shop)
+    }
+    
+    private func openInGoogleMaps() {
+        // Encode the search query (name + address for better results)
+        let searchQuery = "\(shop.name), \(shop.address)"
+        let encodedQuery = searchQuery.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? ""
+        
+        // Try to open in Google Maps app first
+        if let googleMapsURL = URL(string: "comgooglemaps://?q=\(encodedQuery)&center=\(shop.coordinates.latitude),\(shop.coordinates.longitude)"),
+           UIApplication.shared.canOpenURL(googleMapsURL) {
+            UIApplication.shared.open(googleMapsURL)
+        } 
+        // Fallback to Google Maps web version (always works)
+        else if let webURL = URL(string: "https://www.google.com/maps/search/?api=1&query=\(encodedQuery)") {
+            UIApplication.shared.open(webURL)
+        }
     }
     
     private func shareShop() {
