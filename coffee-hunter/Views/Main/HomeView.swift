@@ -25,6 +25,23 @@ struct HomeView: View {
                 VStack(spacing: 25) {
                     headerSection
                     quickStatsSection
+                    
+                    // Daily coffee recommendation
+                    if let dailyShop = viewModel.dailyCoffeeShop {
+                        DailyCoffeeCard(shop: dailyShop, viewModel: viewModel)
+                            .padding(.horizontal)
+                            .opacity(showContent ? 1 : 0)
+                            .offset(y: showContent ? 0 : 20)
+                    }
+                    
+                    // Streak card
+                    if viewModel.userStreak.currentStreak > 0 {
+                        StreakCard(streak: viewModel.userStreak)
+                            .padding(.horizontal)
+                            .opacity(showContent ? 1 : 0)
+                            .offset(y: showContent ? 0 : 20)
+                    }
+                    
                     discoveryCard
                     filterSection
                     coffeeShopsGrid
