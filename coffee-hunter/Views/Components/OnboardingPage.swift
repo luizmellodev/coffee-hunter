@@ -95,21 +95,27 @@ struct OnboardingPage: View {
                 hasSeenOnboarding?.wrappedValue = true
             }
         }) {
-            Text("Get Started")
-                .font(.system(.headline, design: .rounded))
-                .foregroundColor(.white)
-                .frame(height: 50)
-                .frame(maxWidth: .infinity)
-                .background(
-                    LinearGradient(
-                        colors: [.brown, .brown.opacity(0.9)],
-                        startPoint: .top,
-                        endPoint: .bottom
-                    )
+            HStack(spacing: 12) {
+                Text("Get Started")
+                    .font(.system(.headline, design: .rounded))
+                    .fontWeight(.semibold)
+                
+                Image(systemName: "arrow.right.circle.fill")
+                    .font(.title3)
+            }
+            .foregroundColor(.white)
+            .frame(height: 56)
+            .frame(maxWidth: .infinity)
+            .background(
+                LinearGradient(
+                    colors: [.brown, .brown.opacity(0.85)],
+                    startPoint: .topLeading,
+                    endPoint: .bottomTrailing
                 )
-                .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
-                .shadow(color: .brown.opacity(0.15), radius: 10, x: 0, y: 5)
-                .accessibility(identifier: "getStartedButton")
+            )
+            .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
+            .shadow(color: .brown.opacity(0.3), radius: 12, x: 0, y: 6)
+            .accessibility(identifier: "getStartedButton")
         }
         .padding(.horizontal, 32)
         .padding(.bottom, 50)
