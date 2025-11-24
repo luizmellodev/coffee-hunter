@@ -7,6 +7,11 @@ class MockCoffeeHunterDataManager: CoffeeHunterDataManaging {
     var favorites: [CoffeeShop] = []
     var visitHistory: [CoffeeShopVisit] = []
     var isPremium: Bool = false
+    var userStreak: UserStreak = .empty
+    var dailyRecommendation: DailyRecommendation?
+    var purchasedTourIds: Set<String> = []
+    var purchasedGuideIds: Set<String> = []
+    var unlockedAchievements: [String: Date] = [:]
     var dateToUseForVisits: Date = Date()
     
     func addFavorite(_ shop: CoffeeShop) {
@@ -40,5 +45,56 @@ class MockCoffeeHunterDataManager: CoffeeHunterDataManaging {
     
     func generateCoffeeRoute(from shops: [CoffeeShop]) -> [CoffeeShop] {
         Array(shops.prefix(3))
+    }
+    
+    // Daily recommendation
+    func getDailyRecommendation(from shops: [CoffeeShop]) -> CoffeeShop? {
+        return shops.first
+    }
+    
+    // Streak
+    func updateStreak(visitDate: Date = Date()) {
+        if userStreak.lastVisitDate == nil {
+            userStreak.currentStreak = 1
+            userStreak.longestStreak = 1
+        } else {
+            userStreak.currentStreak += 1
+            if userStreak.currentStreak > userStreak.longestStreak {
+                userStreak.longestStreak = userStreak.currentStreak
+            }
+        }
+        userStreak.lastVisitDate = visitDate
+    }
+    
+    // Purchases
+    func purchaseTour(_ tourId: String) {
+        purchasedTourIds.insert(tourId)
+    }
+    
+    func hasPurchasedTour(_ tourId: String) -> Bool {
+        return isPremium || purchasedTourIds.contains(tourId)
+    }
+    
+    func purchaseGuide(_ guideId: String) {
+        purchasedGuideIds.insert(guideId)
+    }
+    
+    func hasPurchasedGuide(_ guideId: String) -> Bool {
+        return purchasedGuideIds.contains(guideId)
+    }
+    
+    // Achievements
+    func unlockAchievement(_ achievementId: String) {
+        if unlockedAchievements[achievementId] == nil {
+            unlockedAchievements[achievementId] = Date()
+        }
+    }
+    
+    func isAchievementUnlocked(_ achievementId: String) -> Bool {
+        return unlockedAchievements[achievementId] != nil
+    }
+    
+    func getUnlockedDate(for achievementId: String) -> Date? {
+        return unlockedAchievements[achievementId]
     }
 }
