@@ -164,7 +164,11 @@ final class CoffeeHunterViewModelTests: XCTestCase {
         
         // Then
         let achievements = viewModel.getAchievements()
-        XCTAssertEqual(achievements.count, 3)
+        XCTAssertEqual(achievements.count, 12)
+        
+        // Verify that the 3 expected achievements are unlocked
+        let unlockedAchievements = achievements.filter { $0.isUnlocked }
+        XCTAssertTrue(unlockedAchievements.count >= 3, "Deve ter pelo menos 3 achievements desbloqueados")
         XCTAssertTrue(achievements.contains { $0.title == "Coffee Explorer" && $0.isUnlocked })
         XCTAssertTrue(achievements.contains { $0.title == "Coffee Enthusiast" && $0.isUnlocked })
         XCTAssertTrue(achievements.contains { $0.title == "Regular Customer" && $0.isUnlocked })

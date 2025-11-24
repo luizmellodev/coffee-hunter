@@ -30,15 +30,15 @@ struct AchievementRow: View {
                     )
                     .frame(width: 50, height: 50)
                 
-                Image(systemName: achievement.icon)
+            Image(systemName: achievement.icon)
                     .font(.title3)
                     .foregroundColor(.white)
             }
             
             VStack(alignment: .leading, spacing: 4) {
                 HStack(spacing: 8) {
-                    Text(achievement.title)
-                        .font(.headline)
+                Text(achievement.title)
+                    .font(.headline)
                         .foregroundColor(achievement.isUnlocked ? .primary : .secondary)
                     
                     if achievement.isUnlocked {
