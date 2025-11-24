@@ -22,6 +22,10 @@ struct ProfileView: View {
                     statsSection
                         .padding(.horizontal)
                     
+                    // Streak section
+                    StreakInfoView(streak: viewModel.userStreak)
+                        .padding(.horizontal)
+                    
                     VStack(spacing: 25) {
                         achievementsSection
                         actionsSection
