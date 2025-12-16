@@ -11,12 +11,10 @@ import SwiftUI
 
 struct CoffeeMapView: View {
     @ObservedObject var viewModel: CoffeeHunterViewModel
-    @Binding var selectedIndex: Int
     @State private var position: MapCameraPosition
 
-    init(viewModel: CoffeeHunterViewModel, selectedIndex: Binding<Int>) {
+    init(viewModel: CoffeeHunterViewModel) {
         self.viewModel = viewModel
-        self._selectedIndex = selectedIndex
         
         if let selectedLocation = viewModel.selectedLocation {
             self._position = State(initialValue: .region(MKCoordinateRegion(
@@ -75,33 +73,19 @@ struct CoffeeMapView: View {
         }
         .onReceive(viewModel.$selectedLocation) { location in
             guard let location = location else { return }
-            withAnimation {
-                position = .region(MKCoordinateRegion(
-                    center: location,
-                    span: MKCoordinateSpan(latitudeDelta: 0.05, longitudeDelta: 0.05)
-                ))
-            }
-        }
-        .onChange(of: selectedIndex) { _, newIndex in
-            let sortedShops = viewModel.sortedCoffeeShopsByDistance
-            guard newIndex < sortedShops.count else { return }
-            
-            let shop = sortedShops[newIndex]
-            viewModel.selectedCoffeeShop = shop
-            updateRegion(for: shop)
+            moveCamera(to: location, zoom: 0.05)
         }
         .onChange(of: viewModel.selectedCoffeeShop) { _, shop in
             guard let shop = shop else { return }
-            updateRegion(for: shop)
-            selectedIndex = viewModel.getShopIndex(shop)
+            moveCamera(to: shop.coordinates, zoom: 0.01)
         }
     }
 
-    private func updateRegion(for shop: CoffeeShop) {
+    private func moveCamera(to location: CLLocationCoordinate2D, zoom: Double) {
         withAnimation {
             position = .region(MKCoordinateRegion(
-                center: shop.coordinates,
-                span: MKCoordinateSpan(latitudeDelta: 0.01, longitudeDelta: 0.01)
+                center: location,
+                span: MKCoordinateSpan(latitudeDelta: zoom, longitudeDelta: zoom)
             ))
         }
     }
@@ -109,5 +93,5 @@ struct CoffeeMapView: View {
 
 #Preview {
     let viewModel = CoffeeHunterViewModel()
-    CoffeeMapView(viewModel: viewModel, selectedIndex: .constant(0))
+    CoffeeMapView(viewModel: viewModel)
 }

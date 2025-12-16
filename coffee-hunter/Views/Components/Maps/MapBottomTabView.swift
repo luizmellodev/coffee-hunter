@@ -9,22 +9,15 @@ import SwiftUI
 
 struct MapBottomTabView: View {
     @ObservedObject var viewModel: CoffeeHunterViewModel
-    @Binding var selectedIndex: Int
     
     var body: some View {
-        TabView(selection: $selectedIndex) {
+        TabView(selection: $viewModel.selectedCoffeeShop) {
             ForEach(viewModel.sortedCoffeeShopsByDistance) { shop in
                 ShopBottomCard(shop: shop)
-                    .tag(viewModel.getShopIndex(shop))
+                    .tag(shop as CoffeeShop?)
             }
         }
         .frame(height: 180)
         .tabViewStyle(.page(indexDisplayMode: .never))
-        .onChange(of: selectedIndex) { _, newIndex in
-            let sortedShops = viewModel.sortedCoffeeShopsByDistance
-            if newIndex < sortedShops.count {
-                viewModel.selectedCoffeeShop = sortedShops[newIndex]
-            }
-        }
     }
 }

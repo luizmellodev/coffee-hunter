@@ -352,10 +352,7 @@ class CoffeeHunterViewModel: ObservableObject {
     
     func navigateToMapWithShop(_ shop: CoffeeShop) {
         selectedTab = 1 // Map tab
-        updateLocation(shop.coordinates)
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-            self.selectedCoffeeShop = shop
-        }
+        selectedCoffeeShop = shop
     }
     
     func getRandomCoffeeShop(userLocation: CLLocation) -> CoffeeShop? {

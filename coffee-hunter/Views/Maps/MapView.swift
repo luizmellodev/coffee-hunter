@@ -12,18 +12,17 @@ import SwiftUI
 struct MapView: View {
     @ObservedObject var viewModel: CoffeeHunterViewModel
     @State private var searchText = ""
-    @State private var selectedIndex = 0
     @State private var showRandomPicker = false
     @State private var showCoffeeRoute = false
     
     var body: some View {
         NavigationStack {
             ZStack(alignment: .bottom) {
-                CoffeeMapView(viewModel: viewModel, selectedIndex: $selectedIndex)
+                CoffeeMapView(viewModel: viewModel)
                 VStack(spacing: 0) {
                     Spacer()
                     if !viewModel.coffeeShops.isEmpty {
-                        MapBottomTabView(viewModel: viewModel, selectedIndex: $selectedIndex)
+                        MapBottomTabView(viewModel: viewModel)
                             .padding(.bottom)
                     }
                 }
