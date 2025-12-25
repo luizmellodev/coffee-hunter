@@ -29,6 +29,7 @@ struct ProfileView: View {
                     VStack(spacing: 25) {
                         achievementsSection
                         actionsSection
+                        aboutSection
                     }
                     .padding()
                     .background(Color(.secondarySystemBackground))
@@ -184,6 +185,46 @@ struct ProfileView: View {
                 }
             }
             }
+        }
+    }
+    
+    private var aboutSection: some View {
+        VStack(alignment: .leading, spacing: 16) {
+            HStack {
+                Image(systemName: "info.circle.fill")
+                    .foregroundColor(.brown)
+                Text("About Coffee Shop Search")
+                    .font(.title3)
+                    .bold()
+            }
+            
+            VStack(alignment: .leading, spacing: 12) {
+                Text("Coffee Hunter uses Apple Maps to find nearby cafes. While we find most popular coffee shops, some smaller or newer cafes might not appear in search results due to Apple Maps limitations.")
+                    .font(.subheadline)
+                    .foregroundColor(.secondary)
+                    .fixedSize(horizontal: false, vertical: true)
+                
+                HStack(spacing: 4) {
+                    Image(systemName: "heart.fill")
+                        .font(.caption)
+                        .foregroundColor(.pink)
+                    Text("Missing a favorite spot?")
+                        .font(.subheadline)
+                        .bold()
+                }
+                
+                Text("We're working on features to let you add your favorite local cafes manually. Stay tuned for updates!")
+                    .font(.subheadline)
+                    .foregroundColor(.secondary)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+            .padding()
+            .background(Color(.systemBackground))
+            .clipShape(RoundedRectangle(cornerRadius: 12))
+            .overlay(
+                RoundedRectangle(cornerRadius: 12)
+                    .stroke(Color.brown.opacity(0.3), lineWidth: 1)
+            )
         }
     }
     
