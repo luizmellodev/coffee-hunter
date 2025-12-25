@@ -16,6 +16,7 @@ struct LocationPickerView: View {
     @State private var selectedLocation: CLLocationCoordinate2D?
     @State private var searchResults: [MKMapItem] = []
     @State private var isSearching = false
+    @State private var searchTask: Task<Void, Never>?
     
     init(viewModel: CoffeeHunterViewModel) {
         self.viewModel = viewModel
@@ -53,10 +54,25 @@ struct LocationPickerView: View {
             }
             .searchable(text: $searchText, prompt: "Search location")
             .onChange(of: searchText) { _, newValue in
-                if !newValue.isEmpty {
-                    searchLocation(query: newValue)
-                } else {
+                // Cancel previous search
+                searchTask?.cancel()
+                
+                if newValue.isEmpty {
                     searchResults = []
+                    return
+                }
+                
+                // Debounce: wait 0.5s after user stops typing
+                searchTask = Task {
+                    try? await Task.sleep(nanoseconds: 500_000_000) // 0.5 seconds
+                    
+                    // Check if task was cancelled
+                    guard !Task.isCancelled else { return }
+                    
+                    // Perform search
+                    await MainActor.run {
+                        searchLocation(query: newValue)
+                    }
                 }
             }
             .navigationTitle("Choose Location")

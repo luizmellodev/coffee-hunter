@@ -24,11 +24,11 @@ struct MainTabView: View {
                 }
                 .tag(1)
             
-            DiscoverView(viewModel: viewModel)
-                .tabItem {
-                    Label("Discover", systemImage: "star.fill")
-                }
-                .tag(2)
+//            DiscoverView(viewModel: viewModel)
+//                .tabItem {
+//                    Label("Discover", systemImage: "star.fill")
+//                }
+//                .tag(2)
             
             ProfileView(viewModel: viewModel)
                 .tabItem {
